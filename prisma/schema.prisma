@@ -1,0 +1,24 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  telegramId    String   @unique
+  username      String?
+  avatar        String?
+  user_link     String?
+  referral      String? 
+  level         Int      @default(5)
+  tonWalletAddress String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  referredBy    User?    @relation("UserReferrals", fields: [referral], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  referrals     User[]   @relation("UserReferrals")
+}

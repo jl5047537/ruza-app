@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --background-dark: #000000;
+  --foreground: #171717;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background-dark);
+  font-family: Roboto, sans-serif;
+}
+
+
+p {
+  line-height: normal;
+}
