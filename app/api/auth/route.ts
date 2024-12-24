@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client'
+import prisma from '@/lib/prisma'
 import jwt from 'jsonwebtoken'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
-	const prisma = new PrismaClient()
 	const { searchParams } = new URL(req.url)
 	const token = searchParams.get('token')
 
