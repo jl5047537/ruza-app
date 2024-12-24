@@ -7,9 +7,9 @@ import WalletIcon from '@/public/Icons/WalletIcon'
 import { Address } from '@ton/core'
 import { useTonConnectUI } from '@tonconnect/ui-react'
 import { useCallback, useEffect, useState } from 'react'
+import Logotype from '../Logotype/Logotype'
 import Button from '../UI/Button/Button'
 import styles from './Header.module.scss'
-import LogotypeIcon from '@/public/Icons/LogotypeIcon'
 
 const Header = () => {
 	const [tonConnectUI] = useTonConnectUI()
@@ -41,7 +41,6 @@ const Header = () => {
 				showToast('Ошибка при подключении кошелька.', 'error')
 				return
 			}
-
 		} catch (error) {
 			console.error('Error updating wallet address:', error)
 			showToast('Ошибка при подключении к серверу.', 'error')
@@ -114,7 +113,7 @@ const Header = () => {
 		<div className={styles.header}>
 			<div className={styles.container}>
 				<div className={styles.left}>
-					<LogotypeIcon />
+					<Logotype />
 				</div>
 				<div className={styles.right}>
 					<div className={styles.themeMode}>

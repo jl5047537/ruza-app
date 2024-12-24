@@ -42,9 +42,9 @@ import WalletIcon from '@/public/Icons/WalletIcon';
 import { Address } from '@ton/core';
 import { useTonConnectUI } from '@tonconnect/ui-react';
 import { useCallback, useEffect, useState } from 'react';
+import Logotype from '../Logotype/Logotype';
 import Button from '../UI/Button/Button';
 import styles from './Header.module.scss';
-import LogotypeIcon from '@/public/Icons/LogotypeIcon';
 var Header = function () {
     var tonConnectUI = useTonConnectUI()[0];
     var _a = useState(null), tonWalletAddress = _a[0], setTonWalletAddress = _a[1];
@@ -163,7 +163,7 @@ var Header = function () {
     return (<div className={styles.header}>
 			<div className={styles.container}>
 				<div className={styles.left}>
-					<LogotypeIcon />
+					<Logotype />
 				</div>
 				<div className={styles.right}>
 					<div className={styles.themeMode}>
