@@ -1,8 +1,9 @@
+import { PrismaClient } from '@prisma/client'
 import jwt from 'jsonwebtoken'
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '../../../../lib/prisma'
 
 export async function GET(req: NextRequest) {
+	const prisma = new PrismaClient()
 	const authHeader = req.headers.get('authorization')
 	console.log('Authorization Header:', authHeader)
 
