@@ -10,6 +10,7 @@ import styles from './Page.module.scss'
 export default function AuthPage() {
 	const [message, setMessage] = useState('')
 	const router = useRouter()
+	const authBotName = 'RuZaAuthBot'
 
 	useEffect(() => {
 		const token = localStorage.getItem('jwt')
@@ -32,7 +33,7 @@ export default function AuthPage() {
 		}
 	}, [router])
 
-	const telegramLoginUrl = `https://telegram.me/${process.env.NEXT_PUBLIC_BOT_USERNAME}?start=auth`
+	const telegramLoginUrl = `https://telegram.me/${authBotName}?start=auth`
 
 	return (
 		<div className={styles.auth}>
