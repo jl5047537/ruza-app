@@ -1,0 +1,115 @@
+@media screen and (max-width: 780px) {
+	.header {
+		display: flex;
+		width: 100%;
+		height: 80px;
+		padding: 0px 10px;
+	}
+}
+
+@media screen and (min-width: 780px) {
+	.header {
+		display: flex;
+		width: 100%;
+		height: 80px;
+		padding: 0px 100px;
+	}
+}
+
+.container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	height: 100%;
+	border-bottom: 1px solid #22222250;
+
+	.left {
+		display: flex;
+		justify-content: left;
+		align-items: center;
+		width: 40%;
+		height: 100%;
+	}
+
+	.right {
+		display: flex;
+		justify-content: right;
+		align-items: center;
+		width: 60%;
+		height: 100%;
+
+		.themeMode {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 9999px;
+			width: 48px;
+			height: 48px;
+			background-color: #0d0d0d;
+			margin-right: 10px;
+			transition: all 0.25s ease-in-out;
+
+			&:hover {
+				transition: all 0.25s ease-in-out;
+				background-color: #222222;
+				cursor: pointer;
+			}
+		}
+
+		.connectWallet {
+			background: linear-gradient(90deg, #00ffbe, #007cfb);
+			color: #ffffff;
+			font-size: 13px;
+			font-weight: 500;
+			width: auto;
+			height: 48px;
+			border-radius: 9999px;
+			padding: 0px 20px;
+		}
+
+		.wallet {
+			display: flex;
+			align-items: center;
+			width: auto;
+			height: 48px;
+			background-color: #0d0d0d;
+			border-radius: 9999px;
+			padding: 0px 0px 0px 20px;
+
+			.leftWallet {
+				display: flex;
+				flex-flow: column;
+				align-items: end;
+				justify-content: center;
+
+				.pWallet {
+					color: #888888;
+					font-size: 13px;
+					font-weight: 500;
+				}
+
+				.pAdressWallet {
+					color: #ffffff;
+					font-size: 15px;
+					font-weight: 700;
+				}
+			}
+
+			.rightWallet {
+				margin-left: 10px;
+				margin-right: 4px;
+
+				.iconWallet {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					background-color: #222222;
+					width: 40px;
+					height: 40px;
+					border-radius: 9999px;
+				}
+			}
+		}
+	}
+}

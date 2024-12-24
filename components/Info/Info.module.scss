@@ -1,0 +1,282 @@
+@media screen and (max-width: 780px) {
+	.info {
+		width: 100%;
+		height: 200px;
+		border-radius: 30px;
+		background-image: url('../../public/Images/BGmin.png');
+		background-position: center;
+		background-size: cover;
+		margin-bottom: 25px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 10px;
+
+		.infoUser {
+			display: flex;
+			align-items: center;
+
+			.avatar {
+				width: 100px;
+				height: 100px;
+
+				img {
+					width: 100%;
+					height: 100%;
+					border-radius: 10px;
+				}
+			}
+
+			.infoUser {
+				display: flex;
+				flex-flow: column;
+				align-items: start;
+				margin-left: 10px;
+
+				.userName {
+					a {
+						font-size: 18px;
+						font-weight: 900;
+						color: #ffffff;
+					}
+				}
+
+				.userLink {
+					color: #888888;
+					font-size: 14px;
+					font-weight: 500;
+				}
+			}
+		}
+	}
+
+	.infoCurrency {
+		h2 {
+			font-size: 18px;
+			font-weight: 900;
+			color: #ffffff;
+		}
+
+		.dropdown {
+			position: relative;
+			width: 100%;
+			max-width: 300px;
+
+			.madMarker {
+				display: flex;
+				align-items: center;
+
+				.marker {
+					color: #888888;
+					margin-right: 10px;
+					font-size: 14px;
+					font-weight: 500;
+				}
+
+				.selectedOption {
+					position: relative;
+					border-radius: 5px;
+					background: none;
+					font-size: 18px;
+					font-weight: 700;
+					color: #ffffff;
+					cursor: pointer;
+					transition: border-color 0.2s;
+				}
+			}
+
+			.optionsList {
+				position: absolute;
+				top: 100%;
+				left: 0;
+				right: 0;
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				border: 1px solid #888888;
+				border-radius: 5px;
+				background: none;
+				z-index: 10;
+				max-height: 200px;
+				overflow-y: auto;
+			}
+
+			.option {
+				padding: 10px;
+				font-size: 16px;
+				color: #ffffff;
+				font-weight: 700;
+				background: transparent;
+				cursor: pointer;
+				transition: background 0.2s;
+
+				&:hover {
+					background: #f0f0f0;
+					color: #000000;
+				}
+			}
+		}
+	}
+}
+
+@media screen and (min-width: 780px) {
+	.info {
+		width: 100%;
+		height: 300px;
+		border-radius: 40px;
+		background-image: url('../../public/Images/BGmax.png');
+		background-position: center;
+		background-size: cover;
+		margin-bottom: 25px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 25px;
+
+		.infoUsers {
+			width: 33.3333%;
+			display: flex;
+			flex-flow: column;
+			align-items: center;
+			align-items: center;
+
+			.avatar {
+				width: 120px;
+				height: 120px;
+				background: linear-gradient(90deg, #00ffbe, #007cfb);
+				border-radius: 20px;
+				padding: 3px;
+				opacity: 0.8;
+
+				img {
+					width: 100%;
+					height: 100%;
+					border-radius: 18px;
+				}
+			}
+
+			.infoUser {
+				margin-top: 10px;
+				display: flex;
+				flex-flow: column;
+				align-items: center;
+
+				.userName {
+					a {
+						font-size: 24px;
+						font-weight: 900;
+						color: #ffffff;
+					}
+				}
+
+				.userLink {
+					line-height: 1;
+					color: #888888;
+				}
+
+				.level {
+					font-size: 14px;
+					font-weight: 500;
+					margin-top: 10px;
+					color: #000000;
+					border-radius: 5px;
+					background: linear-gradient(90deg, #00ffbe, #007cfb);
+					padding: 5px 15px;
+				}
+			}
+		}
+	}
+
+	.balanceUser {
+		width: 33.333%;
+		display: flex;
+		justify-content: end;
+
+		.balance {
+			display: flex;
+			flex-flow: column;
+			align-items: end;
+
+			h2 {
+				font-size: 24px;
+				font-weight: 900;
+				color: #ffffff;
+			}
+
+			p {
+				font-size: 18px;
+				font-weight: 900;
+				color: #ffffff;
+			}
+		}
+	}
+
+	.infoCurrency {
+		width: 33.3333%;
+
+		h2 {
+			font-size: 24px;
+			font-weight: 900;
+			color: #ffffff;
+		}
+
+		.dropdown {
+			position: relative;
+			width: 100%;
+			max-width: 300px;
+
+			.madMarker {
+				display: flex;
+				align-items: center;
+
+				.marker {
+					color: #888888;
+					margin-right: 10px;
+				}
+
+				.selectedOption {
+					position: relative;
+					border-radius: 5px;
+					background: none;
+					font-size: 18px;
+					font-weight: 700;
+					color: #ffffff;
+					cursor: pointer;
+					transition: border-color 0.2s;
+				}
+			}
+
+			.optionsList {
+				position: absolute;
+				top: 100%;
+				left: 0;
+				right: 0;
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				border: 1px solid #888888;
+				border-radius: 5px;
+				background-color: #0d0d0d;
+				z-index: 10;
+				max-height: 200px;
+				width: 182px;
+				overflow-y: auto;
+			}
+
+			.option {
+				padding: 10px;
+				font-size: 16px;
+				color: #ffffff;
+				font-weight: 700;
+				background: transparent;
+				cursor: pointer;
+				transition: background 0.2s;
+
+				&:hover {
+					background: #f0f0f0;
+					color: #000000;
+				}
+			}
+		}
+	}
+}
