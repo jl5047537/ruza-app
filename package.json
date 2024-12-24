@@ -2,19 +2,25 @@
   "name": "ruza-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm-run-all -p start:bot next:dev",
+    "next:dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start:bot": "node dist/bot/AuthBot.js"
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",
     "@ton/core": "^0.59.1",
     "@tonconnect/ui-react": "^2.0.9",
     "classnames": "^2.5.1",
+    "dotenv": "^16.4.7",
     "jsonwebtoken": "^9.0.2",
     "next": "14.2.12",
+    "node-telegram-bot-api": "^0.66.0",
+    "npm-run-all": "^4.1.5",
     "prisma": "^6.1.0",
     "react": "^18",
     "react-dom": "^18",
@@ -24,6 +30,7 @@
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20",
+    "@types/node-telegram-bot-api": "^0.64.7",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "postcss": "^8",

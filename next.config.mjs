@@ -1,4 +1,7 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+	images: {
+		domains: ['api.telegram.org'],
+	},
+}
 
-export default nextConfig;
+export default nextConfig
