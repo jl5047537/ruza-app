@@ -1,8 +1,8 @@
-import LogotypeIcon from '@/public/Icons/LogotypeIcon';
 import styles from './Logotype.module.scss';
+import RuzaIcon from '@/public/Icons/RuzaIcon';
 var Logotype = function () {
     return (<div className={styles.logotype}>
-			<LogotypeIcon />
+			<RuzaIcon />
 		</div>);
 };
 export default Logotype;

@@ -76,3 +76,39 @@ export function POST(req) {
         });
     });
 }
+export function GET(req) {
+    return __awaiter(this, void 0, void 0, function () {
+        var authHeader, token, decoded, user, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    authHeader = req.headers.get('authorization');
+                    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+                        return [2 /*return*/, NextResponse.json({ error: 'Authorization header is missing or invalid.' }, { status: 401 })];
+                    }
+                    token = authHeader.split(' ')[1];
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    decoded = jwt.verify(token, process.env.JWT_SECRET);
+                    return [4 /*yield*/, prisma.user.findUnique({
+                            where: { id: decoded.id },
+                            select: { tonWalletAddress: true },
+                        })];
+                case 2:
+                    user = _a.sent();
+                    if (!user) {
+                        return [2 /*return*/, NextResponse.json({ error: 'User not found.' }, { status: 404 })];
+                    }
+                    return [2 /*return*/, NextResponse.json({
+                            tonWalletAddress: user.tonWalletAddress,
+                        })];
+                case 3:
+                    error_2 = _a.sent();
+                    console.error('Token verification error:', error_2);
+                    return [2 /*return*/, NextResponse.json({ error: 'Invalid or expired token.' }, { status: 401 })];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}

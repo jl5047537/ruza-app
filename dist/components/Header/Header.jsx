@@ -104,19 +104,54 @@ var Header = function () {
         setIsLoading(false);
     }, []);
     useEffect(function () {
-        var checkWalletConnection = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var _a, _b;
-            return __generator(this, function (_c) {
-                if ((_a = tonConnectUI.account) === null || _a === void 0 ? void 0 : _a.address) {
-                    handleWalletConnection((_b = tonConnectUI.account) === null || _b === void 0 ? void 0 : _b.address);
+        var fetchWalletAddress = function () { return __awaiter(void 0, void 0, void 0, function () {
+            var token, response, errorData, tonWalletAddress_1, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        token = localStorage.getItem('jwt');
+                        if (!token) {
+                            console.error('JWT token is missing');
+                            setIsLoading(false);
+                            return [2 /*return*/];
+                        }
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 6, 7, 8]);
+                        return [4 /*yield*/, fetch('/api/wallet', {
+                                method: 'GET',
+                                headers: {
+                                    Authorization: "Bearer ".concat(token),
+                                },
+                            })];
+                    case 2:
+                        response = _a.sent();
+                        if (!!response.ok) return [3 /*break*/, 4];
+                        return [4 /*yield*/, response.json()];
+                    case 3:
+                        errorData = _a.sent();
+                        console.error('Ошибка получения адреса кошелька:', errorData.error);
+                        setIsLoading(false);
+                        return [2 /*return*/];
+                    case 4: return [4 /*yield*/, response.json()];
+                    case 5:
+                        tonWalletAddress_1 = (_a.sent()).tonWalletAddress;
+                        if (tonWalletAddress_1) {
+                            setTonWalletAddress(tonWalletAddress_1);
+                        }
+                        return [3 /*break*/, 8];
+                    case 6:
+                        error_2 = _a.sent();
+                        console.error('Error fetching wallet address:', error_2);
+                        return [3 /*break*/, 8];
+                    case 7:
+                        setIsLoading(false);
+                        return [7 /*endfinally*/];
+                    case 8: return [2 /*return*/];
                 }
-                else {
-                    handleWalletDisconnection();
-                }
-                return [2 /*return*/];
             });
         }); };
-        checkWalletConnection();
+        fetchWalletAddress();
         var unsubscribe = tonConnectUI.onStatusChange(function (wallet) {
             if (wallet) {
                 handleWalletConnection(wallet.account.address);

@@ -62,15 +62,41 @@ const Header = () => {
 	}, [])
 
 	useEffect(() => {
-		const checkWalletConnection = async () => {
-			if (tonConnectUI.account?.address) {
-				handleWalletConnection(tonConnectUI.account?.address)
-			} else {
-				handleWalletDisconnection()
+		const fetchWalletAddress = async () => {
+			const token = localStorage.getItem('jwt')
+			if (!token) {
+				console.error('JWT token is missing')
+				setIsLoading(false)
+				return
+			}
+
+			try {
+				const response = await fetch('/api/wallet', {
+					method: 'GET',
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				})
+
+				if (!response.ok) {
+					const errorData = await response.json()
+					console.error('Ошибка получения адреса кошелька:', errorData.error)
+					setIsLoading(false)
+					return
+				}
+
+				const { tonWalletAddress } = await response.json()
+				if (tonWalletAddress) {
+					setTonWalletAddress(tonWalletAddress)
+				}
+			} catch (error) {
+				console.error('Error fetching wallet address:', error)
+			} finally {
+				setIsLoading(false)
 			}
 		}
 
-		checkWalletConnection()
+		fetchWalletAddress()
 
 		const unsubscribe = tonConnectUI.onStatusChange(wallet => {
 			if (wallet) {
