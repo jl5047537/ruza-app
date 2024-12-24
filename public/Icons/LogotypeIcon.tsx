@@ -1,4 +1,4 @@
-import { IconProps } from '@/types/Icon.props'
+import { IconProps } from '@/lib/utils/Icon.props'
 
 const LogotypeIcon: React.FC<IconProps> = ({ className = '', fill = '' }) => {
 	return (

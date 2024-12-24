@@ -1,4 +1,4 @@
-import { IconProps } from '@/types/Icon.props'
+import { IconProps } from '@/lib/utils/Icon.props'
 
 const TelegramIcon: React.FC<IconProps> = ({ size = 45, className = '' }) => {
 	const svgSize = `${size}px`

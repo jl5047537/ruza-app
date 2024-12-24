@@ -1,4 +1,4 @@
-import { IconProps } from '@/types/Icon.props'
+import { IconProps } from '@/lib/utils/Icon.props'
 
 const WalletIcon: React.FC<IconProps> = ({
 	size = 18,

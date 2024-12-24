@@ -1,4 +1,4 @@
-import { IconProps } from '@/types/Icon.props'
+import { IconProps } from '@/lib/utils/Icon.props'
 
 const ThemeIcon: React.FC<IconProps> = ({
 	size = 22,
