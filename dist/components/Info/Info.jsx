@@ -72,15 +72,24 @@ var Info = function (_a) {
                         if (!response.ok) {
                             throw new Error('Failed to fetch currencies');
                         }
-                        return [4 /*yield*/, response.json()];
+                        return [4 /*yield*/, response.json()
+                            // Добавляем проверку структуры данных
+                        ];
                     case 3:
                         data = _b.sent();
-                        fetchedCurrencies = data.currencies.map(function (currency) { return ({
-                            name: currency.name,
-                            balance: currency.balance,
-                        }); });
-                        setCurrencies(fetchedCurrencies);
-                        setSelectedCurrency(fetchedCurrencies[0] || null);
+                        // Добавляем проверку структуры данных
+                        console.log('Fetched data:', data);
+                        if (!data.currencies || data.currencies.length === 0) {
+                            setError('Нет доступных криптовалют.');
+                        }
+                        else {
+                            fetchedCurrencies = data.currencies.map(function (currency) { return ({
+                                name: currency.name,
+                                balance: currency.balance,
+                            }); });
+                            setCurrencies(fetchedCurrencies);
+                            setSelectedCurrency(fetchedCurrencies[0] || null);
+                        }
                         return [3 /*break*/, 6];
                     case 4:
                         err_1 = _b.sent();

@@ -16,6 +16,7 @@ model User {
   referral      String? 
   level         Int      @default(5)
   tonWalletAddress String?
+  walletStatus     Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

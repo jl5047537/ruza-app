@@ -48,8 +48,9 @@ import styles from './Header.module.scss';
 var Header = function () {
     var tonConnectUI = useTonConnectUI()[0];
     var _a = useState(null), tonWalletAddress = _a[0], setTonWalletAddress = _a[1];
-    var _b = useState(true), isLoading = _b[0], setIsLoading = _b[1];
-    var _c = useState(false), copied = _c[0], setCopied = _c[1];
+    var _b = useState(false), walletStatus = _b[0], setWalletStatus = _b[1];
+    var _c = useState(true), isLoading = _c[0], setIsLoading = _c[1];
+    var _d = useState(false), copied = _d[0], setCopied = _d[1];
     var showToast = useToast();
     var updateWalletAddress = function (address) { return __awaiter(void 0, void 0, void 0, function () {
         var token, response, errorData, error_1;
@@ -81,7 +82,9 @@ var Header = function () {
                     console.error('Ошибка при подключении кошелька:', errorData.error);
                     showToast('Ошибка при подключении кошелька.', 'error');
                     return [2 /*return*/];
-                case 4: return [3 /*break*/, 6];
+                case 4:
+                    setWalletStatus(true);
+                    return [3 /*break*/, 6];
                 case 5:
                     error_1 = _a.sent();
                     console.error('Error updating wallet address:', error_1);
@@ -97,17 +100,35 @@ var Header = function () {
         updateWalletAddress(address);
         setIsLoading(false);
     }, []);
-    var handleWalletDisconnection = useCallback(function () {
-        setTonWalletAddress(null);
-        console.log('Кошелек успешно отключен!');
-        updateWalletAddress(null);
-        setIsLoading(false);
-    }, []);
+    var handleWalletDisconnection = useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var token;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setTonWalletAddress(null);
+                    console.log('Кошелек успешно отключен!');
+                    setWalletStatus(false);
+                    token = localStorage.getItem('jwt');
+                    if (!token)
+                        return [2 /*return*/];
+                    return [4 /*yield*/, fetch('/api/wallet', {
+                            method: 'DELETE',
+                            headers: {
+                                Authorization: "Bearer ".concat(token),
+                            },
+                        })];
+                case 1:
+                    _a.sent();
+                    setIsLoading(false);
+                    return [2 /*return*/];
+            }
+        });
+    }); }, []);
     useEffect(function () {
-        var fetchWalletAddress = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var token, response, errorData, tonWalletAddress_1, error_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+        var fetchWalletStatus = function () { return __awaiter(void 0, void 0, void 0, function () {
+            var token, response, errorData, _a, tonWalletAddress_1, walletStatus_1, error_2;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         token = localStorage.getItem('jwt');
                         if (!token) {
@@ -115,9 +136,9 @@ var Header = function () {
                             setIsLoading(false);
                             return [2 /*return*/];
                         }
-                        _a.label = 1;
+                        _b.label = 1;
                     case 1:
-                        _a.trys.push([1, 6, 7, 8]);
+                        _b.trys.push([1, 6, 7, 8]);
                         return [4 /*yield*/, fetch('/api/wallet', {
                                 method: 'GET',
                                 headers: {
@@ -125,23 +146,27 @@ var Header = function () {
                                 },
                             })];
                     case 2:
-                        response = _a.sent();
+                        response = _b.sent();
                         if (!!response.ok) return [3 /*break*/, 4];
                         return [4 /*yield*/, response.json()];
                     case 3:
-                        errorData = _a.sent();
+                        errorData = _b.sent();
                         console.error('Ошибка получения адреса кошелька:', errorData.error);
                         setIsLoading(false);
                         return [2 /*return*/];
                     case 4: return [4 /*yield*/, response.json()];
                     case 5:
-                        tonWalletAddress_1 = (_a.sent()).tonWalletAddress;
-                        if (tonWalletAddress_1) {
+                        _a = _b.sent(), tonWalletAddress_1 = _a.tonWalletAddress, walletStatus_1 = _a.walletStatus;
+                        if (tonWalletAddress_1 && walletStatus_1) {
                             setTonWalletAddress(tonWalletAddress_1);
+                            setWalletStatus(true); // Обновляем статус
+                        }
+                        else {
+                            setWalletStatus(false);
                         }
                         return [3 /*break*/, 8];
                     case 6:
-                        error_2 = _a.sent();
+                        error_2 = _b.sent();
                         console.error('Error fetching wallet address:', error_2);
                         return [3 /*break*/, 8];
                     case 7:
@@ -151,7 +176,7 @@ var Header = function () {
                 }
             });
         }); };
-        fetchWalletAddress();
+        fetchWalletStatus();
         var unsubscribe = tonConnectUI.onStatusChange(function (wallet) {
             if (wallet) {
                 handleWalletConnection(wallet.account.address);

@@ -36,13 +36,20 @@ const Info = ({ user }: InfoProps) => {
 
 					const data = await response.json()
 
-					const fetchedCurrencies = data.currencies.map((currency: any) => ({
-						name: currency.name,
-						balance: currency.balance,
-					}))
+					// Добавляем проверку структуры данных
+					console.log('Fetched data:', data)
 
-					setCurrencies(fetchedCurrencies)
-					setSelectedCurrency(fetchedCurrencies[0] || null)
+					if (!data.currencies || data.currencies.length === 0) {
+						setError('Нет доступных криптовалют.')
+					} else {
+						const fetchedCurrencies = data.currencies.map((currency: any) => ({
+							name: currency.name,
+							balance: currency.balance,
+						}))
+
+						setCurrencies(fetchedCurrencies)
+						setSelectedCurrency(fetchedCurrencies[0] || null)
+					}
 				} catch (err: any) {
 					console.error('Error fetching currencies:', err)
 					setCurrencies([])

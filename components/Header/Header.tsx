@@ -14,6 +14,7 @@ import styles from './Header.module.scss'
 const Header = () => {
 	const [tonConnectUI] = useTonConnectUI()
 	const [tonWalletAddress, setTonWalletAddress] = useState<string | null>(null)
+	const [walletStatus, setWalletStatus] = useState(false)
 	const [isLoading, setIsLoading] = useState(true)
 	const [copied, setCopied] = useState(false)
 	const showToast = useToast()
@@ -41,6 +42,8 @@ const Header = () => {
 				showToast('Ошибка при подключении кошелька.', 'error')
 				return
 			}
+
+			setWalletStatus(true)
 		} catch (error) {
 			console.error('Error updating wallet address:', error)
 			showToast('Ошибка при подключении к серверу.', 'error')
@@ -54,15 +57,25 @@ const Header = () => {
 		setIsLoading(false)
 	}, [])
 
-	const handleWalletDisconnection = useCallback(() => {
+	const handleWalletDisconnection = useCallback(async () => {
 		setTonWalletAddress(null)
 		console.log('Кошелек успешно отключен!')
-		updateWalletAddress(null)
+		setWalletStatus(false)
+
+		const token = localStorage.getItem('jwt')
+		if (!token) return
+		await fetch('/api/wallet', {
+			method: 'DELETE',
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+
 		setIsLoading(false)
 	}, [])
 
 	useEffect(() => {
-		const fetchWalletAddress = async () => {
+		const fetchWalletStatus = async () => {
 			const token = localStorage.getItem('jwt')
 			if (!token) {
 				console.error('JWT token is missing')
@@ -85,9 +98,12 @@ const Header = () => {
 					return
 				}
 
-				const { tonWalletAddress } = await response.json()
-				if (tonWalletAddress) {
+				const { tonWalletAddress, walletStatus } = await response.json()
+				if (tonWalletAddress && walletStatus) {
 					setTonWalletAddress(tonWalletAddress)
+					setWalletStatus(true) // Обновляем статус
+				} else {
+					setWalletStatus(false)
 				}
 			} catch (error) {
 				console.error('Error fetching wallet address:', error)
@@ -96,7 +112,7 @@ const Header = () => {
 			}
 		}
 
-		fetchWalletAddress()
+		fetchWalletStatus()
 
 		const unsubscribe = tonConnectUI.onStatusChange(wallet => {
 			if (wallet) {

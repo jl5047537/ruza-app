@@ -37,9 +37,46 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 import prisma from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
+export function GET(req) {
+    return __awaiter(this, void 0, void 0, function () {
+        var authHeader, token, decoded, user, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    authHeader = req.headers.get('authorization');
+                    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+                        return [2 /*return*/, NextResponse.json({ error: 'Authorization header is missing or invalid.' }, { status: 401 })];
+                    }
+                    token = authHeader.split(' ')[1];
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    decoded = jwt.verify(token, process.env.JWT_SECRET);
+                    return [4 /*yield*/, prisma.user.findUnique({
+                            where: { id: decoded.id },
+                            select: { tonWalletAddress: true, walletStatus: true },
+                        })];
+                case 2:
+                    user = _a.sent();
+                    if (!user) {
+                        return [2 /*return*/, NextResponse.json({ error: 'User not found.' }, { status: 404 })];
+                    }
+                    return [2 /*return*/, NextResponse.json({
+                            tonWalletAddress: user.tonWalletAddress,
+                            walletStatus: user.walletStatus,
+                        })];
+                case 3:
+                    error_1 = _a.sent();
+                    console.error('Token verification error:', error_1);
+                    return [2 /*return*/, NextResponse.json({ error: 'Invalid or expired token.' }, { status: 401 })];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
 export function POST(req) {
     return __awaiter(this, void 0, void 0, function () {
-        var authHeader, token, decoded, tonWalletAddress, error_1;
+        var authHeader, token, decoded, tonWalletAddress, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -60,7 +97,10 @@ export function POST(req) {
                     }
                     return [4 /*yield*/, prisma.user.update({
                             where: { id: decoded.id },
-                            data: { tonWalletAddress: tonWalletAddress },
+                            data: {
+                                tonWalletAddress: tonWalletAddress,
+                                walletStatus: true,
+                            },
                         })];
                 case 3:
                     _a.sent();
@@ -68,17 +108,18 @@ export function POST(req) {
                             message: 'Wallet address updated successfully.',
                         })];
                 case 4:
-                    error_1 = _a.sent();
-                    console.error('Token verification error:', error_1);
+                    error_2 = _a.sent();
+                    console.error('Token verification error:', error_2);
                     return [2 /*return*/, NextResponse.json({ error: 'Invalid or expired token.' }, { status: 401 })];
                 case 5: return [2 /*return*/];
             }
         });
     });
 }
-export function GET(req) {
+// Отключаем кошелек
+export function DELETE(req) {
     return __awaiter(this, void 0, void 0, function () {
-        var authHeader, token, decoded, user, error_2;
+        var authHeader, token, decoded, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -91,21 +132,21 @@ export function GET(req) {
                 case 1:
                     _a.trys.push([1, 3, , 4]);
                     decoded = jwt.verify(token, process.env.JWT_SECRET);
-                    return [4 /*yield*/, prisma.user.findUnique({
+                    return [4 /*yield*/, prisma.user.update({
                             where: { id: decoded.id },
-                            select: { tonWalletAddress: true },
+                            data: {
+                                tonWalletAddress: null,
+                                walletStatus: false,
+                            },
                         })];
                 case 2:
-                    user = _a.sent();
-                    if (!user) {
-                        return [2 /*return*/, NextResponse.json({ error: 'User not found.' }, { status: 404 })];
-                    }
+                    _a.sent();
                     return [2 /*return*/, NextResponse.json({
-                            tonWalletAddress: user.tonWalletAddress,
+                            message: 'Wallet disconnected successfully.',
                         })];
                 case 3:
-                    error_2 = _a.sent();
-                    console.error('Token verification error:', error_2);
+                    error_3 = _a.sent();
+                    console.error('Token verification error:', error_3);
                     return [2 /*return*/, NextResponse.json({ error: 'Invalid or expired token.' }, { status: 401 })];
                 case 4: return [2 /*return*/];
             }
