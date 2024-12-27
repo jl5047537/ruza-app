@@ -57,10 +57,20 @@ const Header = () => {
 	}
 
 	const handleWalletConnection = useCallback(
-		(address: string) => {
+		async (address: string) => {
 			setTonWalletAddress(address)
 			console.log('Кошелек успешно подключен!')
 			updateWalletAddress(address)
+			setWalletStatus(false)
+
+			const token = localStorage.getItem('jwt')
+			if (!token) return
+			await fetch('/api/wallet', {
+				method: 'DELETE',
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			})
 			setIsLoading(false)
 		},
 		[setTonWalletAddress, setIsLoading]
@@ -69,6 +79,7 @@ const Header = () => {
 	const handleWalletDisconnection = useCallback(async () => {
 		setTonWalletAddress(null)
 		console.log('Кошелек успешно отключен!')
+		updateWalletAddress(null)
 		setWalletStatus(false)
 
 		const token = localStorage.getItem('jwt')
