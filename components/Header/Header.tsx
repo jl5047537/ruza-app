@@ -1,6 +1,7 @@
 'use client'
 
 import { useToast } from '@/lib/contexts/ToastContext'
+import useStore from '@/lib/store/store'
 import { triggerHapticFeedback } from '@/lib/utils/ui'
 import ThemeIcon from '@/public/Icons/ThemeIcon'
 import WalletIcon from '@/public/Icons/WalletIcon'
@@ -13,8 +14,13 @@ import styles from './Header.module.scss'
 
 const Header = () => {
 	const [tonConnectUI] = useTonConnectUI()
-	const [tonWalletAddress, setTonWalletAddress] = useState<string | null>(null)
-	const [walletStatus, setWalletStatus] = useState(false)
+	const {
+		tonWalletAddress,
+		walletStatus,
+		setTonWalletAddress,
+		setWalletStatus,
+		resetWalletState,
+	} = useStore()
 	const [isLoading, setIsLoading] = useState(true)
 	const [copied, setCopied] = useState(false)
 	const showToast = useToast()
@@ -50,12 +56,15 @@ const Header = () => {
 		}
 	}
 
-	const handleWalletConnection = useCallback((address: string) => {
-		setTonWalletAddress(address)
-		console.log('Кошелек успешно подключен!')
-		updateWalletAddress(address)
-		setIsLoading(false)
-	}, [])
+	const handleWalletConnection = useCallback(
+		(address: string) => {
+			setTonWalletAddress(address)
+			console.log('Кошелек успешно подключен!')
+			updateWalletAddress(address)
+			setIsLoading(false)
+		},
+		[setTonWalletAddress, setIsLoading]
+	)
 
 	const handleWalletDisconnection = useCallback(async () => {
 		setTonWalletAddress(null)
@@ -71,8 +80,9 @@ const Header = () => {
 			},
 		})
 
+		resetWalletState()
 		setIsLoading(false)
-	}, [])
+	}, [setTonWalletAddress, setWalletStatus, resetWalletState])
 
 	useEffect(() => {
 		const fetchWalletStatus = async () => {
@@ -101,7 +111,7 @@ const Header = () => {
 				const { tonWalletAddress, walletStatus } = await response.json()
 				if (tonWalletAddress && walletStatus) {
 					setTonWalletAddress(tonWalletAddress)
-					setWalletStatus(true) // Обновляем статус
+					setWalletStatus(true)
 				} else {
 					setWalletStatus(false)
 				}
@@ -125,7 +135,13 @@ const Header = () => {
 		return () => {
 			unsubscribe()
 		}
-	}, [tonConnectUI, handleWalletConnection, handleWalletDisconnection])
+	}, [
+		tonConnectUI,
+		handleWalletConnection,
+		handleWalletDisconnection,
+		setTonWalletAddress,
+		setWalletStatus,
+	])
 
 	const handleWalletAction = async () => {
 		if (tonConnectUI.connected) {

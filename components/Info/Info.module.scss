@@ -57,6 +57,10 @@
 			color: #ffffff;
 		}
 
+		.infoNotConnectWallet {
+			color: #888888;
+		}
+
 		.dropdown {
 			position: relative;
 			width: 100%;
@@ -214,10 +218,21 @@
 	.infoCurrency {
 		width: 33.3333%;
 
-		h2 {
-			font-size: 24px;
-			font-weight: 900;
-			color: #ffffff;
+		.infoNotConnectWallet {
+			color: #888888;
+		}
+
+		.webTonIcon {
+			display: flex;
+			align-items: center;
+			margin-bottom: 5px;
+
+			.web {
+				font-size: 24px;
+				font-weight: 900;
+				color: #ffffff;
+				margin-right: 10px;
+			}
 		}
 
 		.dropdown {

@@ -1,10 +1,10 @@
 'use client'
 
-import { Roboto } from 'next/font/google'
-import './globals.scss'
-import { TonConnectUIProvider } from '@tonconnect/ui-react'
 import { ToastProvider } from '@/lib/contexts/ToastContext'
 import { WALLET_MANIFEST_URL } from '@/lib/utils/consts'
+import { TonConnectUIProvider } from '@tonconnect/ui-react'
+import { Roboto } from 'next/font/google'
+import './globals.scss'
 
 const roboto = Roboto({
 	weight: ['100', '300', '400', '500', '700', '900'],

@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { useToast } from '@/lib/contexts/ToastContext';
+import useStore from '@/lib/store/store';
 import { triggerHapticFeedback } from '@/lib/utils/ui';
 import ThemeIcon from '@/public/Icons/ThemeIcon';
 import WalletIcon from '@/public/Icons/WalletIcon';
@@ -47,10 +48,9 @@ import Button from '../UI/Button/Button';
 import styles from './Header.module.scss';
 var Header = function () {
     var tonConnectUI = useTonConnectUI()[0];
-    var _a = useState(null), tonWalletAddress = _a[0], setTonWalletAddress = _a[1];
-    var _b = useState(false), walletStatus = _b[0], setWalletStatus = _b[1];
-    var _c = useState(true), isLoading = _c[0], setIsLoading = _c[1];
-    var _d = useState(false), copied = _d[0], setCopied = _d[1];
+    var _a = useStore(), tonWalletAddress = _a.tonWalletAddress, walletStatus = _a.walletStatus, setTonWalletAddress = _a.setTonWalletAddress, setWalletStatus = _a.setWalletStatus, resetWalletState = _a.resetWalletState;
+    var _b = useState(true), isLoading = _b[0], setIsLoading = _b[1];
+    var _c = useState(false), copied = _c[0], setCopied = _c[1];
     var showToast = useToast();
     var updateWalletAddress = function (address) { return __awaiter(void 0, void 0, void 0, function () {
         var token, response, errorData, error_1;
@@ -99,7 +99,7 @@ var Header = function () {
         console.log('Кошелек успешно подключен!');
         updateWalletAddress(address);
         setIsLoading(false);
-    }, []);
+    }, [setTonWalletAddress, setIsLoading]);
     var handleWalletDisconnection = useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         var token;
         return __generator(this, function (_a) {
@@ -119,11 +119,12 @@ var Header = function () {
                         })];
                 case 1:
                     _a.sent();
+                    resetWalletState();
                     setIsLoading(false);
                     return [2 /*return*/];
             }
         });
-    }); }, []);
+    }); }, [setTonWalletAddress, setWalletStatus, resetWalletState]);
     useEffect(function () {
         var fetchWalletStatus = function () { return __awaiter(void 0, void 0, void 0, function () {
             var token, response, errorData, _a, tonWalletAddress_1, walletStatus_1, error_2;
@@ -159,7 +160,7 @@ var Header = function () {
                         _a = _b.sent(), tonWalletAddress_1 = _a.tonWalletAddress, walletStatus_1 = _a.walletStatus;
                         if (tonWalletAddress_1 && walletStatus_1) {
                             setTonWalletAddress(tonWalletAddress_1);
-                            setWalletStatus(true); // Обновляем статус
+                            setWalletStatus(true);
                         }
                         else {
                             setWalletStatus(false);
@@ -188,7 +189,13 @@ var Header = function () {
         return function () {
             unsubscribe();
         };
-    }, [tonConnectUI, handleWalletConnection, handleWalletDisconnection]);
+    }, [
+        tonConnectUI,
+        handleWalletConnection,
+        handleWalletDisconnection,
+        setTonWalletAddress,
+        setWalletStatus,
+    ]);
     var handleWalletAction = function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {

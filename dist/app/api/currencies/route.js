@@ -46,8 +46,8 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 import { Address } from '@ton/core';
 import { TonClient } from '@ton/ton';
 import { NextResponse } from 'next/server';
-var TON_API_ENDPOINT = 'https://toncenter.com/api/v2/jsonRPC'; // Укажите ваш API-узел TON
-// Функция для получения Jetton'ов и их балансов
+var TON_API_ENDPOINT = 'https://toncenter.com/api/v2/jsonRPC';
+// Функция для получения данных о жетонах
 function fetchJettons(client, walletAddress) {
     return __awaiter(this, void 0, void 0, function () {
         var jettons, result, jettonWalletCell, jettonWalletAddress, jettonData, name_1, balance, error_1, error_2;
@@ -74,11 +74,10 @@ function fetchJettons(client, walletAddress) {
                 case 5:
                     jettonData = _a.sent();
                     name_1 = jettonData.stack.readString();
-                    balance = jettonData.stack.readBigNumber() // Используем `readBigNumber` для баланса
-                    ;
+                    balance = jettonData.stack.readBigNumber();
                     jettons.push({
                         name: name_1,
-                        balance: (Number(balance) / 1e9).toFixed(2), // Конвертируем баланс в читаемый формат
+                        balance: (Number(balance) / 1e9).toFixed(2),
                     });
                     return [3 /*break*/, 7];
                 case 6:
@@ -96,7 +95,6 @@ function fetchJettons(client, walletAddress) {
         });
     });
 }
-// Функция для получения данных о валютах и их балансе
 function fetchCurrencies(address) {
     return __awaiter(this, void 0, void 0, function () {
         var client, walletAddress, contractState, currencies, jettons, error_3;
@@ -115,7 +113,19 @@ function fetchCurrencies(address) {
                     currencies = [
                         {
                             name: 'TON',
-                            balance: (Number(contractState.balance) / 1e9).toFixed(2), // Преобразуем `bigint` в число
+                            balance: (Number(contractState.balance) / 1e9).toFixed(2),
+                        },
+                        {
+                            name: 'NOT',
+                            balance: '0.00', // Добавьте логику для получения NOT
+                        },
+                        {
+                            name: 'USDT',
+                            balance: '0.00', // Добавьте логику для получения USDT
+                        },
+                        {
+                            name: 'RZ',
+                            balance: '0.00', // Добавьте логику для получения вашего жетона RZ
                         },
                     ];
                     return [4 /*yield*/, fetchJettons(client, walletAddress)];

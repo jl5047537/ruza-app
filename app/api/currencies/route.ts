@@ -2,9 +2,9 @@ import { Address } from '@ton/core'
 import { TonClient } from '@ton/ton'
 import { NextRequest, NextResponse } from 'next/server'
 
-const TON_API_ENDPOINT = 'https://toncenter.com/api/v2/jsonRPC' // Укажите ваш API-узел TON
+const TON_API_ENDPOINT = 'https://toncenter.com/api/v2/jsonRPC'
 
-// Функция для получения Jetton'ов и их балансов
+// Функция для получения данных о жетонах
 async function fetchJettons(client: TonClient, walletAddress: Address) {
 	const jettons: { name: string; balance: string }[] = []
 
@@ -23,11 +23,11 @@ async function fetchJettons(client: TonClient, walletAddress: Address) {
 						'get_jetton_data'
 					)
 					const name = jettonData.stack.readString()
-					const balance = jettonData.stack.readBigNumber() // Используем `readBigNumber` для баланса
+					const balance = jettonData.stack.readBigNumber()
 
 					jettons.push({
 						name,
-						balance: (Number(balance) / 1e9).toFixed(2), // Конвертируем баланс в читаемый формат
+						balance: (Number(balance) / 1e9).toFixed(2),
 					})
 				} catch (error) {
 					console.error(
@@ -44,27 +44,35 @@ async function fetchJettons(client: TonClient, walletAddress: Address) {
 	return jettons
 }
 
-// Функция для получения данных о валютах и их балансе
 async function fetchCurrencies(address: string) {
 	try {
 		const client = new TonClient({ endpoint: TON_API_ENDPOINT })
 		const walletAddress = Address.parse(address)
 
-		// Получаем состояние контракта для извлечения баланса
 		const contractState = await client.getContractState(walletAddress)
 		if (!contractState || contractState.state !== 'active') {
 			throw new Error('Wallet is not active or data is unavailable')
 		}
 
-		// Основная валюта TON
 		const currencies = [
 			{
 				name: 'TON',
-				balance: (Number(contractState.balance) / 1e9).toFixed(2), // Преобразуем `bigint` в число
+				balance: (Number(contractState.balance) / 1e9).toFixed(2),
+			},
+			{
+				name: 'NOT',
+				balance: '0.00', // Добавьте логику для получения NOT
+			},
+			{
+				name: 'USDT',
+				balance: '0.00', // Добавьте логику для получения USDT
+			},
+			{
+				name: 'RZ',
+				balance: '0.00', // Добавьте логику для получения вашего жетона RZ
 			},
 		]
 
-		// Получаем Jetton'ы
 		const jettons = await fetchJettons(client, walletAddress)
 
 		return [...currencies, ...jettons]

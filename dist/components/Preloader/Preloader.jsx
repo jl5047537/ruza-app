@@ -35,13 +35,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import React, { useEffect, useState } from 'react';
+import useStore from '@/lib/store/store';
 import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import styles from './Preloader.module.scss';
 var Preloader = function (_a) {
     var onLoaded = _a.onLoaded;
     var _b = useState(true), isLoading = _b[0], setIsLoading = _b[1];
     var router = useRouter();
+    var _c = useStore(), setAuthentication = _c.setAuthentication, resetAuthState = _c.resetAuthState, setTonWalletAddress = _c.setTonWalletAddress, setWalletStatus = _c.setWalletStatus;
     useEffect(function () {
         var token = localStorage.getItem('jwt');
         if (!token) {
@@ -49,7 +51,7 @@ var Preloader = function (_a) {
             return;
         }
         var fetchData = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var userResponse, user, userData, isWalletConnected, walletResponse, _a, tonWalletAddress, walletStatus, error_1;
+            var userResponse, user, userData, walletResponse, isWalletConnected, _a, tonWalletAddress, walletStatus, error_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -71,20 +73,21 @@ var Preloader = function (_a) {
                         router.push('/auth');
                         return [2 /*return*/];
                     case 4:
-                        isWalletConnected = false;
+                        setAuthentication(true, token, user);
                         return [4 /*yield*/, fetch('/api/wallet', {
                                 method: 'GET',
-                                headers: {
-                                    Authorization: "Bearer ".concat(token),
-                                },
+                                headers: { Authorization: "Bearer ".concat(token) },
                             })];
                     case 5:
                         walletResponse = _b.sent();
+                        isWalletConnected = false;
                         if (!walletResponse.ok) return [3 /*break*/, 7];
                         return [4 /*yield*/, walletResponse.json()];
                     case 6:
                         _a = _b.sent(), tonWalletAddress = _a.tonWalletAddress, walletStatus = _a.walletStatus;
                         isWalletConnected = !!(tonWalletAddress && walletStatus);
+                        setTonWalletAddress(tonWalletAddress);
+                        setWalletStatus(walletStatus);
                         _b.label = 7;
                     case 7:
                         onLoaded(user, isWalletConnected);
@@ -93,6 +96,9 @@ var Preloader = function (_a) {
                         error_1 = _b.sent();
                         console.error('Ошибка загрузки данных:', error_1);
                         onLoaded(null, false);
+                        setAuthentication(false, null, null);
+                        setTonWalletAddress(null);
+                        setWalletStatus(false);
                         return [3 /*break*/, 10];
                     case 9:
                         setIsLoading(false);
@@ -102,7 +108,13 @@ var Preloader = function (_a) {
             });
         }); };
         fetchData();
-    }, [router, onLoaded]);
+    }, [
+        router,
+        onLoaded,
+        setAuthentication,
+        setTonWalletAddress,
+        setWalletStatus,
+    ]);
     if (isLoading) {
         return (<div className={styles.loading}>
 				<p>Загрузка...</p>

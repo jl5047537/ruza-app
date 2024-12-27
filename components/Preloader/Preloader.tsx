@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { User } from '@/app/home/Page.props'
+import useStore from '@/lib/store/store'
+import { useRouter } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 import styles from './Preloader.module.scss'
 
 interface PreloaderProps {
@@ -12,6 +13,13 @@ interface PreloaderProps {
 const Preloader: React.FC<PreloaderProps> = ({ onLoaded }) => {
 	const [isLoading, setIsLoading] = useState(true)
 	const router = useRouter()
+
+	const {
+		setAuthentication,
+		resetAuthState,
+		setTonWalletAddress,
+		setWalletStatus,
+	} = useStore()
 
 	useEffect(() => {
 		const token = localStorage.getItem('jwt')
@@ -37,30 +45,42 @@ const Preloader: React.FC<PreloaderProps> = ({ onLoaded }) => {
 					return
 				}
 
-				let isWalletConnected = false
+				setAuthentication(true, token, user)
+
 				const walletResponse = await fetch('/api/wallet', {
 					method: 'GET',
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
+					headers: { Authorization: `Bearer ${token}` },
 				})
 
+				let isWalletConnected = false
 				if (walletResponse.ok) {
 					const { tonWalletAddress, walletStatus } = await walletResponse.json()
 					isWalletConnected = !!(tonWalletAddress && walletStatus)
+
+					setTonWalletAddress(tonWalletAddress)
+					setWalletStatus(walletStatus)
 				}
 
 				onLoaded(user, isWalletConnected)
 			} catch (error) {
 				console.error('Ошибка загрузки данных:', error)
 				onLoaded(null, false)
+				setAuthentication(false, null, null)
+				setTonWalletAddress(null)
+				setWalletStatus(false)
 			} finally {
 				setIsLoading(false)
 			}
 		}
 
 		fetchData()
-	}, [router, onLoaded])
+	}, [
+		router,
+		onLoaded,
+		setAuthentication,
+		setTonWalletAddress,
+		setWalletStatus,
+	])
 
 	if (isLoading) {
 		return (

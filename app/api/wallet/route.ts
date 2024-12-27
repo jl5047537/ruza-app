@@ -85,7 +85,6 @@ export async function POST(req: NextRequest) {
 	}
 }
 
-// Отключаем кошелек
 export async function DELETE(req: NextRequest) {
 	const authHeader = req.headers.get('authorization')
 

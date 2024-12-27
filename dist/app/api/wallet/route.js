@@ -116,7 +116,6 @@ export function POST(req) {
         });
     });
 }
-// Отключаем кошелек
 export function DELETE(req) {
     return __awaiter(this, void 0, void 0, function () {
         var authHeader, token, decoded, error_3;

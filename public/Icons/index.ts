@@ -6,6 +6,7 @@ import YesIcon from './YesIcon'
 import RuzaIcon from './RuzaIcon'
 import ConnectIcon from './ConnectIcon'
 import TelegramIcon from './TelegramIcon'
+import TonIcon from './TonIcon'
 
 export default {
 	LogotypeIcon,
@@ -16,4 +17,5 @@ export default {
 	RuzaIcon,
 	ConnectIcon,
 	TelegramIcon,
+	TonIcon,
 }

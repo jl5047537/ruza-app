@@ -1,4 +1,5 @@
 import { useToast } from '@/lib/contexts/ToastContext'
+import TonIcon from '@/public/Icons/TonIcon'
 import { useTonConnectUI } from '@tonconnect/ui-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -16,52 +17,61 @@ const Info = ({ user }: InfoProps) => {
 		useState<CryptoCurrency | null>(null)
 	const [dropdownOpen, setDropdownOpen] = useState(false)
 	const [tonConnectUI] = useTonConnectUI()
-	const linkProfile = `/profile/@${user.user_link}`
 
-	useEffect(() => {
-		const fetchCurrencies = async () => {
-			if (tonConnectUI.account?.address) {
-				setIsLoading(true)
-				setError(null)
-
-				try {
-					const walletAddress = tonConnectUI.account.address
-
-					const response = await fetch(
-						`/api/currencies?address=${walletAddress}`
-					)
-					if (!response.ok) {
-						throw new Error('Failed to fetch currencies')
-					}
-
-					const data = await response.json()
-
-					// Добавляем проверку структуры данных
-					console.log('Fetched data:', data)
-
-					if (!data.currencies || data.currencies.length === 0) {
-						setError('Нет доступных криптовалют.')
-					} else {
-						const fetchedCurrencies = data.currencies.map((currency: any) => ({
-							name: currency.name,
-							balance: currency.balance,
-						}))
-
-						setCurrencies(fetchedCurrencies)
-						setSelectedCurrency(fetchedCurrencies[0] || null)
-					}
-				} catch (err: any) {
-					console.error('Error fetching currencies:', err)
-					setCurrencies([])
-					setError('Не удалось загрузить данные.')
-				} finally {
-					setIsLoading(false)
-				}
-			}
+	const fetchCurrencies = async () => {
+		if (!tonConnectUI.account?.address) {
+			setCurrencies([])
+			setSelectedCurrency(null)
+			setError(null)
+			setIsLoading(false)
+			return
 		}
 
+		setIsLoading(true)
+		setError(null)
+
+		try {
+			const walletAddress = tonConnectUI.account.address
+
+			const response = await fetch(`/api/currencies?address=${walletAddress}`)
+			if (!response.ok) {
+				throw new Error('Failed to fetch currencies')
+			}
+
+			const data = await response.json()
+			console.log('Fetched data:', data)
+
+			if (!data.currencies || data.currencies.length === 0) {
+				setError('Нет доступных криптовалют.')
+			} else {
+				const fetchedCurrencies = data.currencies.map((currency: any) => ({
+					name: currency.name,
+					balance: currency.balance,
+				}))
+
+				setCurrencies(fetchedCurrencies)
+				setSelectedCurrency(fetchedCurrencies[0] || null)
+			}
+		} catch (err: any) {
+			console.error('Error fetching currencies:', err)
+			setCurrencies([])
+			setError('Не удалось загрузить данные.')
+		} finally {
+			setIsLoading(false)
+		}
+	}
+
+	useEffect(() => {
 		fetchCurrencies()
-	}, [tonConnectUI.account?.address])
+
+		const unsubscribe = tonConnectUI.onStatusChange(() => {
+			fetchCurrencies()
+		})
+
+		return () => {
+			unsubscribe()
+		}
+	}, [tonConnectUI])
 
 	const handleSelectCurrency = (currency: CryptoCurrency) => {
 		setSelectedCurrency(currency)
@@ -71,11 +81,18 @@ const Info = ({ user }: InfoProps) => {
 	return (
 		<div className={styles.info}>
 			<div className={styles.infoCurrency}>
-				<h2>Сеть TON</h2>
+				<div className={styles.webTonIcon}>
+					<div className={styles.web}>Сеть</div>
+					<div className={styles.tonIcon}>
+						<TonIcon />
+					</div>
+				</div>
 				{isLoading && <p>Загрузка валют...</p>}
 				{error && <p>{error}</p>}
 				{!isLoading && currencies.length === 0 && !error && (
-					<p>Нет доступных криптовалют.</p>
+					<p className={styles.infoNotConnectWallet}>
+						Данные не доступны, подключите кошелек
+					</p>
 				)}
 
 				{!isLoading && currencies.length > 0 && (
@@ -111,7 +128,7 @@ const Info = ({ user }: InfoProps) => {
 				</div>
 				<div className={styles.infoUser}>
 					<div className={styles.userName}>
-						<Link href={linkProfile}>{user.username}</Link>
+						<Link href='/profile'>{user.username}</Link>
 					</div>
 					<div className={styles.userLink}>@{user.user_link}</div>
 					<div className={styles.level}>

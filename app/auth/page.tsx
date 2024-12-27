@@ -1,16 +1,18 @@
 'use client'
 
+import useStore from '@/lib/store/store'
 import ConnectIcon from '@/public/Icons/ConnectIcon'
 import RuzaIcon from '@/public/Icons/RuzaIcon'
 import TelegramIcon from '@/public/Icons/TelegramIcon'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import styles from './Page.module.scss'
+import { BOT_NAME } from '@/lib/utils/consts'
 
 export default function AuthPage() {
 	const [message, setMessage] = useState('')
 	const router = useRouter()
-	const authBotName = 'RuZaAuthBot'
+	const { setAuthentication } = useStore()
 
 	useEffect(() => {
 		const token = localStorage.getItem('jwt')
@@ -24,6 +26,9 @@ export default function AuthPage() {
 
 			if (urlToken) {
 				localStorage.setItem('jwt', urlToken)
+
+				setAuthentication(true, urlToken, null)
+
 				router.push('/')
 			} else {
 				setMessage(
@@ -31,9 +36,9 @@ export default function AuthPage() {
 				)
 			}
 		}
-	}, [router])
+	}, [router, setAuthentication])
 
-	const telegramLoginUrl = `https://telegram.me/${authBotName}?start=auth`
+	const telegramLoginUrl = `https://telegram.me/${BOT_NAME}?start=auth`
 
 	return (
 		<div className={styles.auth}>

@@ -35,6 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { useToast } from '@/lib/contexts/ToastContext';
+import TonIcon from '@/public/Icons/TonIcon';
 import { useTonConnectUI } from '@tonconnect/ui-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -42,80 +43,94 @@ import { useEffect, useState } from 'react';
 import Button from '../UI/Button/Button';
 import styles from './Info.module.scss';
 var Info = function (_a) {
-    var _b;
     var user = _a.user;
     var showToast = useToast();
-    var _c = useState([]), currencies = _c[0], setCurrencies = _c[1];
-    var _d = useState(true), isLoading = _d[0], setIsLoading = _d[1];
-    var _e = useState(null), error = _e[0], setError = _e[1];
-    var _f = useState(null), selectedCurrency = _f[0], setSelectedCurrency = _f[1];
-    var _g = useState(false), dropdownOpen = _g[0], setDropdownOpen = _g[1];
+    var _b = useState([]), currencies = _b[0], setCurrencies = _b[1];
+    var _c = useState(true), isLoading = _c[0], setIsLoading = _c[1];
+    var _d = useState(null), error = _d[0], setError = _d[1];
+    var _e = useState(null), selectedCurrency = _e[0], setSelectedCurrency = _e[1];
+    var _f = useState(false), dropdownOpen = _f[0], setDropdownOpen = _f[1];
     var tonConnectUI = useTonConnectUI()[0];
-    var linkProfile = "/profile/@".concat(user.user_link);
-    useEffect(function () {
-        var fetchCurrencies = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var walletAddress, response, data, fetchedCurrencies, err_1;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        if (!((_a = tonConnectUI.account) === null || _a === void 0 ? void 0 : _a.address)) return [3 /*break*/, 6];
-                        setIsLoading(true);
-                        setError(null);
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 4, 5, 6]);
-                        walletAddress = tonConnectUI.account.address;
-                        return [4 /*yield*/, fetch("/api/currencies?address=".concat(walletAddress))];
-                    case 2:
-                        response = _b.sent();
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch currencies');
-                        }
-                        return [4 /*yield*/, response.json()
-                            // Добавляем проверку структуры данных
-                        ];
-                    case 3:
-                        data = _b.sent();
-                        // Добавляем проверку структуры данных
-                        console.log('Fetched data:', data);
-                        if (!data.currencies || data.currencies.length === 0) {
-                            setError('Нет доступных криптовалют.');
-                        }
-                        else {
-                            fetchedCurrencies = data.currencies.map(function (currency) { return ({
-                                name: currency.name,
-                                balance: currency.balance,
-                            }); });
-                            setCurrencies(fetchedCurrencies);
-                            setSelectedCurrency(fetchedCurrencies[0] || null);
-                        }
-                        return [3 /*break*/, 6];
-                    case 4:
-                        err_1 = _b.sent();
-                        console.error('Error fetching currencies:', err_1);
+    var fetchCurrencies = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var walletAddress, response, data, fetchedCurrencies, err_1;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    if (!((_a = tonConnectUI.account) === null || _a === void 0 ? void 0 : _a.address)) {
                         setCurrencies([]);
-                        setError('Не удалось загрузить данные.');
-                        return [3 /*break*/, 6];
-                    case 5:
+                        setSelectedCurrency(null);
+                        setError(null);
                         setIsLoading(false);
-                        return [7 /*endfinally*/];
-                    case 6: return [2 /*return*/];
-                }
-            });
-        }); };
+                        return [2 /*return*/];
+                    }
+                    setIsLoading(true);
+                    setError(null);
+                    _b.label = 1;
+                case 1:
+                    _b.trys.push([1, 4, 5, 6]);
+                    walletAddress = tonConnectUI.account.address;
+                    return [4 /*yield*/, fetch("/api/currencies?address=".concat(walletAddress))];
+                case 2:
+                    response = _b.sent();
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch currencies');
+                    }
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    data = _b.sent();
+                    console.log('Fetched data:', data);
+                    if (!data.currencies || data.currencies.length === 0) {
+                        setError('Нет доступных криптовалют.');
+                    }
+                    else {
+                        fetchedCurrencies = data.currencies.map(function (currency) { return ({
+                            name: currency.name,
+                            balance: currency.balance,
+                        }); });
+                        setCurrencies(fetchedCurrencies);
+                        setSelectedCurrency(fetchedCurrencies[0] || null);
+                    }
+                    return [3 /*break*/, 6];
+                case 4:
+                    err_1 = _b.sent();
+                    console.error('Error fetching currencies:', err_1);
+                    setCurrencies([]);
+                    setError('Не удалось загрузить данные.');
+                    return [3 /*break*/, 6];
+                case 5:
+                    setIsLoading(false);
+                    return [7 /*endfinally*/];
+                case 6: return [2 /*return*/];
+            }
+        });
+    }); };
+    useEffect(function () {
         fetchCurrencies();
-    }, [(_b = tonConnectUI.account) === null || _b === void 0 ? void 0 : _b.address]);
+        var unsubscribe = tonConnectUI.onStatusChange(function () {
+            fetchCurrencies();
+        });
+        return function () {
+            unsubscribe();
+        };
+    }, [tonConnectUI]);
     var handleSelectCurrency = function (currency) {
         setSelectedCurrency(currency);
         setDropdownOpen(false);
     };
     return (<div className={styles.info}>
 			<div className={styles.infoCurrency}>
-				<h2>Сеть TON</h2>
+				<div className={styles.webTonIcon}>
+					<div className={styles.web}>Сеть</div>
+					<div className={styles.tonIcon}>
+						<TonIcon />
+					</div>
+				</div>
 				{isLoading && <p>Загрузка валют...</p>}
 				{error && <p>{error}</p>}
-				{!isLoading && currencies.length === 0 && !error && (<p>Нет доступных криптовалют.</p>)}
+				{!isLoading && currencies.length === 0 && !error && (<p className={styles.infoNotConnectWallet}>
+						Данные не доступны, подключите кошелек
+					</p>)}
 
 				{!isLoading && currencies.length > 0 && (<div className={styles.dropdown}>
 						<div className={styles.madMarker}>
@@ -137,7 +152,7 @@ var Info = function (_a) {
 				</div>
 				<div className={styles.infoUser}>
 					<div className={styles.userName}>
-						<Link href={linkProfile}>{user.username}</Link>
+						<Link href='/profile'>{user.username}</Link>
 					</div>
 					<div className={styles.userLink}>@{user.user_link}</div>
 					<div className={styles.level}>
