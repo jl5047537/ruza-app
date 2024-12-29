@@ -49,12 +49,13 @@ if (!jwtSecret) {
     throw new Error('JWT_SECRET not found in environment variables');
 }
 var bot = new TelegramBot(token, { polling: true });
-bot.onText(/\/start/, function (msg) { return __awaiter(void 0, void 0, void 0, function () {
-    var chatId, existingUser, jwtToken;
+bot.onText(/\/start(\?referral=(\d+))?/, function (msg, match) { return __awaiter(void 0, void 0, void 0, function () {
+    var chatId, referralId, existingUser, jwtToken;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 chatId = msg.chat.id;
+                referralId = (match === null || match === void 0 ? void 0 : match[2]) ? match[2] : null;
                 return [4 /*yield*/, prisma.user.findUnique({
                         where: { telegramId: chatId.toString() },
                     })];
@@ -74,32 +75,35 @@ bot.onText(/\/start/, function (msg) { return __awaiter(void 0, void 0, void 0, 
     });
 }); });
 bot.onText(/\/auth/, function (msg) { return __awaiter(void 0, void 0, void 0, function () {
-    var chatId, firstName, userLink, photos, avatarUrl, fileId, file, existingUser, newUser, jwtToken, redirectUrl, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var chatId, firstName, userLink, photos, avatarUrl, fileId, file, referralId, existingUser, newUser, jwtToken, redirectUrl, error_1;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 chatId = msg.chat.id;
                 firstName = msg.chat.first_name;
                 userLink = msg.chat.username;
-                _a.label = 1;
+                _b.label = 1;
             case 1:
-                _a.trys.push([1, 7, , 8]);
+                _b.trys.push([1, 9, , 10]);
                 return [4 /*yield*/, bot.getUserProfilePhotos(chatId)];
             case 2:
-                photos = _a.sent();
+                photos = _b.sent();
                 avatarUrl = '';
                 if (!(photos.total_count > 0)) return [3 /*break*/, 4];
                 fileId = photos.photos[0][0].file_id;
                 return [4 /*yield*/, bot.getFile(fileId)];
             case 3:
-                file = _a.sent();
+                file = _b.sent();
                 avatarUrl = "https://api.telegram.org/file/bot".concat(token, "/").concat(file.file_path);
-                _a.label = 4;
-            case 4: return [4 /*yield*/, prisma.user.findUnique({
-                    where: { telegramId: chatId.toString() },
-                })];
+                _b.label = 4;
+            case 4:
+                referralId = (_a = msg.text) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+                return [4 /*yield*/, prisma.user.findUnique({
+                        where: { telegramId: chatId.toString() },
+                    })];
             case 5:
-                existingUser = _a.sent();
+                existingUser = _b.sent();
                 if (existingUser) {
                     bot.sendMessage(chatId, 'Вы уже зарегистрированы.');
                     return [2 /*return*/];
@@ -110,22 +114,37 @@ bot.onText(/\/auth/, function (msg) { return __awaiter(void 0, void 0, void 0, f
                             username: firstName,
                             avatar: avatarUrl,
                             user_link: userLink,
+                            referral: referralId || undefined,
                         },
                     })];
             case 6:
-                newUser = _a.sent();
+                newUser = _b.sent();
                 jwtToken = jwt.sign({ id: newUser.id }, jwtSecret, {
                     expiresIn: '1h',
                 });
                 redirectUrl = "".concat(process.env.BASE_URL, "/auth?token=").concat(jwtToken);
                 bot.sendMessage(chatId, "\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044F \u0443\u0441\u043F\u0435\u0448\u043D\u0430! \u041F\u0435\u0440\u0435\u0445\u043E\u0434\u0438\u0442\u0435 \u043F\u043E \u0441\u0441\u044B\u043B\u043A\u0435 \u0434\u043B\u044F \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u044F: ".concat(redirectUrl));
-                return [3 /*break*/, 8];
+                if (!referralId) return [3 /*break*/, 8];
+                return [4 /*yield*/, prisma.user.update({
+                        where: { id: referralId },
+                        data: {
+                            referrals: {
+                                connect: {
+                                    id: newUser.id,
+                                },
+                            },
+                        },
+                    })];
             case 7:
-                error_1 = _a.sent();
+                _b.sent();
+                _b.label = 8;
+            case 8: return [3 /*break*/, 10];
+            case 9:
+                error_1 = _b.sent();
                 console.error('Ошибка при сохранении пользователя:', error_1);
                 bot.sendMessage(chatId, 'Произошла ошибка при регистрации. Попробуйте снова.');
-                return [3 /*break*/, 8];
-            case 8: return [2 /*return*/];
+                return [3 /*break*/, 10];
+            case 10: return [2 /*return*/];
         }
     });
 }); });

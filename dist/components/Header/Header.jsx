@@ -36,7 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { useToast } from '@/lib/contexts/ToastContext';
-import useStore from '@/lib/store/store';
 import { triggerHapticFeedback } from '@/lib/utils/ui';
 import ThemeIcon from '@/public/Icons/ThemeIcon';
 import WalletIcon from '@/public/Icons/WalletIcon';
@@ -46,6 +45,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Logotype from '../Logotype/Logotype';
 import Button from '../UI/Button/Button';
 import styles from './Header.module.scss';
+import useStore from '@/lib/store/store';
 var Header = function () {
     var tonConnectUI = useTonConnectUI()[0];
     var _a = useStore(), tonWalletAddress = _a.tonWalletAddress, walletStatus = _a.walletStatus, setTonWalletAddress = _a.setTonWalletAddress, setWalletStatus = _a.setWalletStatus, resetWalletState = _a.resetWalletState;
@@ -189,13 +189,7 @@ var Header = function () {
         return function () {
             unsubscribe();
         };
-    }, [
-        tonConnectUI,
-        handleWalletConnection,
-        handleWalletDisconnection,
-        setTonWalletAddress,
-        setWalletStatus,
-    ]);
+    }, [tonConnectUI, handleWalletConnection, handleWalletDisconnection, setTonWalletAddress, setWalletStatus]);
     var handleWalletAction = function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -228,37 +222,37 @@ var Header = function () {
         }
     };
     return (<div className={styles.header}>
-			<div className={styles.container}>
-				<div className={styles.left}>
-					<Logotype />
-				</div>
-				<div className={styles.right}>
-					<div className={styles.themeMode}>
-						<ThemeIcon />
-					</div>
-					{tonWalletAddress ? (<div className={styles.wallet}>
-							<div className={styles.leftWallet}>
-								<p className={styles.pWallet}>Кошелек:</p>
-								<p className={styles.pAdressWallet}>
-									<Button onClick={copyToClipboard}>
-										{formatAddress(tonWalletAddress)}
-									</Button>
-								</p>
-							</div>
-							<div className={styles.rightWallet}>
-								<div className={styles.iconWallet}>
-									<Button className={styles.disconnectWallet} onClick={handleWalletAction}>
-										<WalletIcon />
-									</Button>
-								</div>
-							</div>
-						</div>) : (<div className={styles.walletAddress}>
-							<Button className={styles.connectWallet} onClick={handleWalletAction}>
-								Подключить кошелек
-							</Button>
-						</div>)}
-				</div>
-			</div>
-		</div>);
+      <div className={styles.container}>
+        <div className={styles.left}>
+          <Logotype />
+        </div>
+        <div className={styles.right}>
+          <div className={styles.themeMode}>
+            <ThemeIcon />
+          </div>
+          {tonWalletAddress ? (<div className={styles.wallet}>
+              <div className={styles.leftWallet}>
+                <p className={styles.pWallet}>Кошелек:</p>
+                <p className={styles.pAdressWallet}>
+                  <Button onClick={copyToClipboard}>
+                    {formatAddress(tonWalletAddress)}
+                  </Button>
+                </p>
+              </div>
+              <div className={styles.rightWallet}>
+                <div className={styles.iconWallet}>
+                  <Button className={styles.disconnectWallet} onClick={handleWalletAction}>
+                    <WalletIcon />
+                  </Button>
+                </div>
+              </div>
+            </div>) : (<div className={styles.walletAddress}>
+              <Button className={styles.connectWallet} onClick={handleWalletAction}>
+                Подключить кошелек
+              </Button>
+            </div>)}
+        </div>
+      </div>
+    </div>);
 };
 export default Header;

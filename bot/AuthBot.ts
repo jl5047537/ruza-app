@@ -20,8 +20,10 @@ if (!jwtSecret) {
 
 const bot = new TelegramBot(token, { polling: true })
 
-bot.onText(/\/start/, async msg => {
+bot.onText(/\/start(\?referral=(\d+))?/, async (msg, match) => {
 	const chatId = msg.chat.id
+
+	const referralId = match?.[2] ? match[2] : null
 
 	const existingUser = await prisma.user.findUnique({
 		where: { telegramId: chatId.toString() },
@@ -55,6 +57,8 @@ bot.onText(/\/auth/, async msg => {
 			avatarUrl = `https://api.telegram.org/file/bot${token}/${file.file_path}`
 		}
 
+		const referralId = msg.text?.split(' ')[1]
+
 		const existingUser = await prisma.user.findUnique({
 			where: { telegramId: chatId.toString() },
 		})
@@ -70,6 +74,7 @@ bot.onText(/\/auth/, async msg => {
 				username: firstName,
 				avatar: avatarUrl,
 				user_link: userLink,
+				referral: referralId || undefined,
 			},
 		})
 
@@ -82,6 +87,19 @@ bot.onText(/\/auth/, async msg => {
 			chatId,
 			`Регистрация успешна! Переходите по ссылке для завершения: ${redirectUrl}`
 		)
+
+		if (referralId) {
+			await prisma.user.update({
+				where: { id: referralId },
+				data: {
+					referrals: {
+						connect: {
+							id: newUser.id,
+						},
+					},
+				},
+			})
+		}
 	} catch (error) {
 		console.error('Ошибка при сохранении пользователя:', error)
 		bot.sendMessage(

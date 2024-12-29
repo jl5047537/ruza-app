@@ -7,11 +7,13 @@ import { useEffect, useState } from 'react'
 import Button from '../UI/Button/Button'
 import styles from './WalletUsers.module.scss'
 import { WalletUser } from './WalletUsers.props'
+import { jwtDecode } from 'jwt-decode'
 
 const WalletUsers = () => {
 	const { tonWalletAddress, walletStatus } = useStore(state => state)
 	const [userWalletAddress, setUserWalletAddress] = useState<string>('')
 	const [statusIcon, setStatusIcon] = useState<boolean>(false)
+	const [referralLink, setReferralLink] = useState<string>('')
 
 	useEffect(() => {
 		const token = localStorage.getItem('jwt') || ''
@@ -27,6 +29,37 @@ const WalletUsers = () => {
 			})
 		}
 	}, [walletStatus])
+
+	const generateReferralLink = async () => {
+		try {
+		  const token = localStorage.getItem('jwt')
+		  if (!token) {
+			alert('Ошибка: пользователь не авторизован!')
+			return
+		  }
+	  
+		  const decodedToken = jwtDecode<{ id: string }>(token)
+		  const userId = decodedToken.id
+	  
+		  const response = await fetch('/api/referral', {
+			method: 'POST',
+			body: JSON.stringify({ userId }),
+			headers: { 'Content-Type': 'application/json' },
+		  })
+	  
+		  const data = await response.json()
+	  
+		  if (data.referralLink) {
+			setReferralLink(data.referralLink)
+			alert(`Ваша реферальная ссылка: ${data.referralLink}`)
+		  } else {
+			alert('Ошибка при получении реферальной ссылки')
+		  }
+		} catch (error) {
+		  alert('Ошибка при генерации ссылки')
+		  console.error(error)
+		}
+	  }
 
 	if (!walletStatus) {
 		return (
@@ -66,14 +99,24 @@ const WalletUsers = () => {
 						</p>
 					</div>
 					<div className={styles.iconStatus}>
-						{statusIcon === true ? <NoIcon /> : <YesIcon />}
+						{statusIcon === true ? <YesIcon /> : <NoIcon />}
 					</div>
 				</div>
 				<div className={styles.infoSendWallet}>
 					Комиссия сети за каждый перевод 10%
 				</div>
 				<Button className={styles.sendAll}>Отправить всем</Button>
-				<Button className={styles.sendAll}>Пригласить друзей</Button>
+				<Button className={styles.sendAll} onClick={generateReferralLink}>
+					Пригласить друзей
+				</Button>
+				{referralLink && (
+					<div className={styles.referralLink}>
+						<p>Ваша реферальная ссылка:</p>
+						<a href={referralLink} target='_blank' rel='noopener noreferrer'>
+							{referralLink}
+						</a>
+					</div>
+				)}
 			</div>
 		</div>
 	)

@@ -37,9 +37,63 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 import prisma from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
+export function POST(req) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, telegramId, username, referralId, existingUser, newUser, jwtToken, error_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, req.json()];
+                case 1:
+                    _a = _b.sent(), telegramId = _a.telegramId, username = _a.username, referralId = _a.referralId;
+                    _b.label = 2;
+                case 2:
+                    _b.trys.push([2, 7, , 8]);
+                    return [4 /*yield*/, prisma.user.findUnique({
+                            where: { telegramId: telegramId },
+                        })];
+                case 3:
+                    existingUser = _b.sent();
+                    if (existingUser) {
+                        return [2 /*return*/, NextResponse.json({ error: 'User already exists' }, { status: 400 })];
+                    }
+                    return [4 /*yield*/, prisma.user.create({
+                            data: {
+                                telegramId: telegramId,
+                                username: username,
+                                referral: referralId || null,
+                            },
+                        })];
+                case 4:
+                    newUser = _b.sent();
+                    if (!referralId) return [3 /*break*/, 6];
+                    return [4 /*yield*/, prisma.user.update({
+                            where: { id: referralId },
+                            data: {
+                                referrals: {
+                                    connect: { id: newUser.id },
+                                },
+                            },
+                        })];
+                case 5:
+                    _b.sent();
+                    _b.label = 6;
+                case 6:
+                    jwtToken = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
+                        expiresIn: '1h',
+                    });
+                    return [2 /*return*/, NextResponse.json({ token: jwtToken })];
+                case 7:
+                    error_1 = _b.sent();
+                    console.error('Registration failed:', error_1);
+                    return [2 /*return*/, NextResponse.json({ error: 'Registration failed' }, { status: 500 })];
+                case 8: return [2 /*return*/];
+            }
+        });
+    });
+}
 export function GET(req) {
     return __awaiter(this, void 0, void 0, function () {
-        var authHeader, token, decoded, user, error_1;
+        var authHeader, token, decoded, user, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -65,8 +119,8 @@ export function GET(req) {
                     }
                     return [2 /*return*/, NextResponse.json({ user: user })];
                 case 3:
-                    error_1 = _a.sent();
-                    console.error('Token verification error:', error_1);
+                    error_2 = _a.sent();
+                    console.error('Token verification error:', error_2);
                     return [2 /*return*/, NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 })];
                 case 4: return [2 /*return*/];
             }
