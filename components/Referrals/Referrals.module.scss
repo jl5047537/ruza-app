@@ -1,0 +1,349 @@
+.referralsModule {
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+	justify-content: start;
+	width: 100%;
+	height: calc(100% - 400px);
+	margin-top: 25px;
+
+	.blockName {
+		width: 100%;
+		text-align: center;
+		font-weight: 700;
+		font-size: 20px;
+		background-color: #007cfb;
+		background-image: linear-gradient(90deg, #00ffbe, #007cfb);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.blockReferrals {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-flow: column;
+		margin-top: 25px;
+		overflow-y: auto;
+		overflow-x: hidden;
+
+		&::-webkit-scrollbar {
+			width: 10px;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background-color: #0d0d0d;
+			border-radius: 5px;
+		}
+
+		.leftAndRight {
+			width: 100%;
+			display: flex;
+
+			.left {
+				width: 60%;
+				margin-right: 25px;
+
+				.p {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					width: 100%;
+					height: 60px;
+					background-color: #0d0d0d;
+					border-radius: 10px;
+					color: #888888;
+					font-size: 16px;
+					font-weight: 700;
+				}
+
+				.progressBar {
+					position: relative;
+					display: flex;
+					align-items: center;
+					justify-content: start;
+					width: 100%;
+					height: 50px;
+					background-color: #0d0d0d;
+					border-radius: 9999px;
+					margin-top: 25px;
+					padding: 5px;
+
+					.valueProgressBar {
+						height: 100%;
+						background-color: #00ffa3;
+						border-radius: 9999px;
+					}
+
+					.countRef {
+						color: #0d0d0d;
+						font-weight: 700;
+						position: absolute;
+						left: 25px;
+					}
+				}
+			}
+
+			.right {
+				width: 40%;
+
+				.p {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					width: 100%;
+					height: 60px;
+					background-color: #0d0d0d;
+					border-radius: 10px;
+					color: #888888;
+					font-size: 16px;
+					font-weight: 700;
+				}
+
+				.progressBar {
+					position: relative;
+					display: flex;
+					align-items: center;
+					justify-content: start;
+					width: 100%;
+					height: 50px;
+					background-color: #0d0d0d;
+					border-radius: 9999px;
+					margin-top: 25px;
+					padding: 5px;
+
+					.valueProgressBar {
+						height: 100%;
+						background-color: #00ffa3;
+						border-radius: 9999px;
+					}
+
+					.countRef {
+						color: #0d0d0d;
+						font-weight: 700;
+						position: absolute;
+						left: 25px;
+					}
+				}
+			}
+		}
+
+		.circleReferrals {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			margin-top: 25px;
+
+			.left {
+				width: 33.33333%;
+
+				.p {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					width: 100%;
+					height: 60px;
+					background-color: #0d0d0d;
+					border-radius: 10px;
+					color: #888888;
+					font-size: 14px;
+					font-weight: 700;
+				}
+
+				.progressBar {
+					position: relative;
+					display: flex;
+					align-items: center;
+					justify-content: start;
+					width: 100%;
+					height: 50px;
+					background-color: #0d0d0d;
+					border-radius: 9999px;
+					margin-top: 25px;
+					padding: 5px;
+
+					.valueProgressBar {
+						height: 100%;
+						background-color: #00ffa3;
+						border-radius: 9999px;
+					}
+
+					.countRef {
+						color: #0d0d0d;
+						font-weight: 700;
+						position: absolute;
+						left: 25px;
+					}
+				}
+
+				.progressBarUser {
+					position: relative;
+					display: flex;
+					align-items: center;
+					justify-content: start;
+					width: 100%;
+					height: 50px;
+					background-color: #0d0d0d;
+					border-radius: 9999px;
+					margin-top: 25px;
+					padding: 5px;
+
+					.valueProgressBarUser {
+						height: 100%;
+						background-color: #00ffa3;
+						border-radius: 9999px;
+					}
+
+					.countRefUser {
+						color: #888888;
+						font-weight: 700;
+						position: absolute;
+						left: 25px;
+						font-size: 14px;
+					}
+				}
+			}
+
+			.center {
+				width: 33.33333%;
+				margin: 0 25px;
+
+				.p {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					width: 100%;
+					height: 60px;
+					background-color: #0d0d0d;
+					border-radius: 10px;
+					color: #888888;
+					font-size: 14px;
+					font-weight: 700;
+				}
+
+				.progressBar {
+					position: relative;
+					display: flex;
+					align-items: center;
+					justify-content: start;
+					width: 100%;
+					height: 50px;
+					background-color: #0d0d0d;
+					border-radius: 9999px;
+					margin-top: 25px;
+					padding: 5px;
+
+					.valueProgressBar {
+						height: 100%;
+						background-color: #00ffa3;
+						border-radius: 9999px;
+					}
+
+					.countRef {
+						color: #0d0d0d;
+						font-weight: 700;
+						position: absolute;
+						left: 25px;
+					}
+				}
+
+				.progressBarUser {
+					position: relative;
+					display: flex;
+					align-items: center;
+					justify-content: start;
+					width: 100%;
+					height: 50px;
+					background-color: #0d0d0d;
+					border-radius: 9999px;
+					margin-top: 25px;
+					padding: 5px;
+
+					.valueProgressBarUser {
+						height: 100%;
+						background-color: #00ffa3;
+						border-radius: 9999px;
+					}
+
+					.countRefUser {
+						color: #888888;
+						font-weight: 700;
+						position: absolute;
+						left: 25px;
+						font-size: 14px;
+					}
+				}
+			}
+
+			.right {
+				width: 33.33333%;
+
+				.p {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					width: 100%;
+					height: 60px;
+					background-color: #0d0d0d;
+					border-radius: 10px;
+					color: #888888;
+					font-size: 14px;
+					font-weight: 700;
+				}
+
+				.progressBar {
+					position: relative;
+					display: flex;
+					align-items: center;
+					justify-content: start;
+					width: 100%;
+					height: 50px;
+					background-color: #0d0d0d;
+					border-radius: 9999px;
+					margin-top: 25px;
+					padding: 5px;
+
+					.valueProgressBar {
+						height: 100%;
+						background-color: #00ffa3;
+						border-radius: 9999px;
+					}
+
+					.countRef {
+						color: #0d0d0d;
+						font-weight: 700;
+						position: absolute;
+						left: 25px;
+					}
+				}
+
+				.progressBarUser {
+					position: relative;
+					display: flex;
+					align-items: center;
+					justify-content: start;
+					width: 100%;
+					height: 50px;
+					background-color: #0d0d0d;
+					border-radius: 9999px;
+					margin-top: 25px;
+					padding: 5px;
+
+					.valueProgressBarUser {
+						height: 100%;
+						background-color: #00ffa3;
+						border-radius: 9999px;
+					}
+
+					.countRefUser {
+						color: #888888;
+						font-weight: 700;
+						position: absolute;
+						left: 25px;
+						font-size: 14px;
+					}
+				}
+			}
+		}
+	}
+}

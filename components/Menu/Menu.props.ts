@@ -14,14 +14,14 @@ export const MenuItem: MenuItemProps[] = [
 	},
 	{
 		id: '2',
-		key: 'refferals',
+		key: 'referrals',
 		nameItem: 'Рефералы',
-		href: 'refferals'
+		href: '/referrals'
 	},
 	{
 		id: '3',
 		key: 'profile',
 		nameItem: 'Профиль',
-		href: 'profile'
+		href: '/profile'
 	},
 ]
