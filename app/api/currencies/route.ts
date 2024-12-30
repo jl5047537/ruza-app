@@ -46,41 +46,34 @@ async function fetchJettons(client: TonClient, walletAddress: Address) {
 
 async function fetchCurrencies(address: string) {
 	try {
-		const client = new TonClient({ endpoint: TON_API_ENDPOINT })
-		const walletAddress = Address.parse(address)
-
-		const contractState = await client.getContractState(walletAddress)
-		if (!contractState || contractState.state !== 'active') {
-			throw new Error('Wallet is not active or data is unavailable')
-		}
-
-		const currencies = [
-			{
-				name: 'TON',
-				balance: (Number(contractState.balance) / 1e9).toFixed(2),
-			},
-			{
-				name: 'NOT',
-				balance: '0.00', // Добавьте логику для получения NOT
-			},
-			{
-				name: 'USDT',
-				balance: '0.00', // Добавьте логику для получения USDT
-			},
-			{
-				name: 'RZ',
-				balance: '0.00', // Добавьте логику для получения вашего жетона RZ
-			},
-		]
-
-		const jettons = await fetchJettons(client, walletAddress)
-
-		return [...currencies, ...jettons]
+	  const client = new TonClient({ endpoint: TON_API_ENDPOINT });
+	  const walletAddress = Address.parse(address);
+  
+	  const contractState = await client.getContractState(walletAddress);
+	  if (!contractState || contractState.state !== 'active') {
+		console.warn('Inactive wallet or no contract state for:', address);
+		return [
+		  {
+			name: 'TON',
+			balance: (Number(contractState.balance) / 1e9).toFixed(2),
+		  },
+		];
+	  }
+  
+	  const currencies = [
+		{
+		  name: 'TON',
+		  balance: (Number(contractState.balance) / 1e9).toFixed(2),
+		},
+	  ];
+  
+	  const jettons = await fetchJettons(client, walletAddress);
+	  return [...currencies, ...jettons];
 	} catch (error) {
-		console.error('Error fetching currencies:', error)
-		throw new Error('Failed to fetch currencies.')
+	  console.error('Error fetching currencies for address:', address, error);
+	  throw new Error('Failed to fetch currencies.');
 	}
-}
+  }
 
 export async function GET(req: NextRequest) {
 	const { searchParams } = new URL(req.url)

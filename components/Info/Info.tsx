@@ -62,20 +62,29 @@ const Info = ({ user }: InfoProps) => {
 	}
 
 	useEffect(() => {
-		fetchCurrencies()
-
-		const unsubscribe = tonConnectUI.onStatusChange(() => {
-			fetchCurrencies()
-		})
-
-		return () => {
-			unsubscribe()
+		if (!tonConnectUI.account?.address) {
+		  setCurrencies([]);
+		  setSelectedCurrency(null);
+		  setError(null);
+		  setIsLoading(false);
+		  return;
 		}
-	}, [tonConnectUI])
+	  
+		fetchCurrencies();
+		
+		const unsubscribe = tonConnectUI.onStatusChange(() => {
+		  fetchCurrencies();
+		});
+	  
+		return () => {
+		  unsubscribe();
+		};
+	  }, [tonConnectUI]);
 
 	const handleSelectCurrency = (currency: CryptoCurrency) => {
 		setSelectedCurrency(currency)
 		setDropdownOpen(false)
+		showToast(`Выбрана валюта - ${currency.name}`, 'success')
 	}
 
 	return (

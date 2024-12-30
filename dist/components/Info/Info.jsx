@@ -106,6 +106,14 @@ var Info = function (_a) {
         });
     }); };
     useEffect(function () {
+        var _a;
+        if (!((_a = tonConnectUI.account) === null || _a === void 0 ? void 0 : _a.address)) {
+            setCurrencies([]);
+            setSelectedCurrency(null);
+            setError(null);
+            setIsLoading(false);
+            return;
+        }
         fetchCurrencies();
         var unsubscribe = tonConnectUI.onStatusChange(function () {
             fetchCurrencies();
@@ -117,6 +125,7 @@ var Info = function (_a) {
     var handleSelectCurrency = function (currency) {
         setSelectedCurrency(currency);
         setDropdownOpen(false);
+        showToast("\u0412\u044B\u0431\u0440\u0430\u043D\u0430 \u0432\u0430\u043B\u044E\u0442\u0430 - ".concat(currency.name), 'success');
     };
     return (<div className={styles.info}>
 			<div className={styles.infoCurrency}>

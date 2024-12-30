@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { useToast } from '@/lib/contexts/ToastContext';
+import useStore from '@/lib/store/store';
 import { triggerHapticFeedback } from '@/lib/utils/ui';
 import ThemeIcon from '@/public/Icons/ThemeIcon';
 import WalletIcon from '@/public/Icons/WalletIcon';
@@ -45,7 +46,6 @@ import { useCallback, useEffect, useState } from 'react';
 import Logotype from '../Logotype/Logotype';
 import Button from '../UI/Button/Button';
 import styles from './Header.module.scss';
-import useStore from '@/lib/store/store';
 var Header = function () {
     var tonConnectUI = useTonConnectUI()[0];
     var _a = useStore(), tonWalletAddress = _a.tonWalletAddress, walletStatus = _a.walletStatus, setTonWalletAddress = _a.setTonWalletAddress, setWalletStatus = _a.setWalletStatus, resetWalletState = _a.resetWalletState;
@@ -135,6 +135,7 @@ var Header = function () {
                         if (!token) {
                             console.error('JWT token is missing');
                             setIsLoading(false);
+                            resetWalletState(); // Сброс состояния в Zustand
                             return [2 /*return*/];
                         }
                         _b.label = 1;
@@ -153,22 +154,24 @@ var Header = function () {
                     case 3:
                         errorData = _b.sent();
                         console.error('Ошибка получения адреса кошелька:', errorData.error);
+                        resetWalletState(); // Сброс состояния в случае ошибки
                         setIsLoading(false);
                         return [2 /*return*/];
                     case 4: return [4 /*yield*/, response.json()];
                     case 5:
                         _a = _b.sent(), tonWalletAddress_1 = _a.tonWalletAddress, walletStatus_1 = _a.walletStatus;
-                        if (tonWalletAddress_1 && walletStatus_1) {
+                        if (walletStatus_1) {
                             setTonWalletAddress(tonWalletAddress_1);
                             setWalletStatus(true);
                         }
                         else {
-                            setWalletStatus(false);
+                            resetWalletState();
                         }
                         return [3 /*break*/, 8];
                     case 6:
                         error_2 = _b.sent();
                         console.error('Error fetching wallet address:', error_2);
+                        resetWalletState();
                         return [3 /*break*/, 8];
                     case 7:
                         setIsLoading(false);
@@ -189,7 +192,14 @@ var Header = function () {
         return function () {
             unsubscribe();
         };
-    }, [tonConnectUI, handleWalletConnection, handleWalletDisconnection, setTonWalletAddress, setWalletStatus]);
+    }, [
+        tonConnectUI,
+        handleWalletConnection,
+        handleWalletDisconnection,
+        setTonWalletAddress,
+        setWalletStatus,
+        resetWalletState,
+    ]);
     var handleWalletAction = function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -222,37 +232,37 @@ var Header = function () {
         }
     };
     return (<div className={styles.header}>
-      <div className={styles.container}>
-        <div className={styles.left}>
-          <Logotype />
-        </div>
-        <div className={styles.right}>
-          <div className={styles.themeMode}>
-            <ThemeIcon />
-          </div>
-          {tonWalletAddress ? (<div className={styles.wallet}>
-              <div className={styles.leftWallet}>
-                <p className={styles.pWallet}>Кошелек:</p>
-                <p className={styles.pAdressWallet}>
-                  <Button onClick={copyToClipboard}>
-                    {formatAddress(tonWalletAddress)}
-                  </Button>
-                </p>
-              </div>
-              <div className={styles.rightWallet}>
-                <div className={styles.iconWallet}>
-                  <Button className={styles.disconnectWallet} onClick={handleWalletAction}>
-                    <WalletIcon />
-                  </Button>
-                </div>
-              </div>
-            </div>) : (<div className={styles.walletAddress}>
-              <Button className={styles.connectWallet} onClick={handleWalletAction}>
-                Подключить кошелек
-              </Button>
-            </div>)}
-        </div>
-      </div>
-    </div>);
+			<div className={styles.container}>
+				<div className={styles.left}>
+					<Logotype />
+				</div>
+				<div className={styles.right}>
+					<div className={styles.themeMode}>
+						<ThemeIcon />
+					</div>
+					{tonWalletAddress ? (<div className={styles.wallet}>
+							<div className={styles.leftWallet}>
+								<p className={styles.pWallet}>Кошелек:</p>
+								<p className={styles.pAdressWallet}>
+									<Button onClick={copyToClipboard}>
+										{formatAddress(tonWalletAddress)}
+									</Button>
+								</p>
+							</div>
+							<div className={styles.rightWallet}>
+								<div className={styles.iconWallet}>
+									<Button className={styles.disconnectWallet} onClick={handleWalletAction}>
+										<WalletIcon />
+									</Button>
+								</div>
+							</div>
+						</div>) : (<div className={styles.walletAddress}>
+							<Button className={styles.connectWallet} onClick={handleWalletAction}>
+								Подключить кошелек
+							</Button>
+						</div>)}
+				</div>
+			</div>
+		</div>);
 };
 export default Header;

@@ -7,6 +7,7 @@ import RuzaIcon from './RuzaIcon';
 import ConnectIcon from './ConnectIcon';
 import TelegramIcon from './TelegramIcon';
 import TonIcon from './TonIcon';
+import CopyIcon from './CopyIcon';
 export default {
     LogotypeIcon: LogotypeIcon,
     WalletIcon: WalletIcon,
@@ -17,4 +18,5 @@ export default {
     ConnectIcon: ConnectIcon,
     TelegramIcon: TelegramIcon,
     TonIcon: TonIcon,
+    CopyIcon: CopyIcon,
 };

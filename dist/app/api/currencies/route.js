@@ -108,24 +108,18 @@ function fetchCurrencies(address) {
                 case 1:
                     contractState = _a.sent();
                     if (!contractState || contractState.state !== 'active') {
-                        throw new Error('Wallet is not active or data is unavailable');
+                        console.warn('Inactive wallet or no contract state for:', address);
+                        return [2 /*return*/, [
+                                {
+                                    name: 'TON',
+                                    balance: (Number(contractState.balance) / 1e9).toFixed(2),
+                                },
+                            ]];
                     }
                     currencies = [
                         {
                             name: 'TON',
                             balance: (Number(contractState.balance) / 1e9).toFixed(2),
-                        },
-                        {
-                            name: 'NOT',
-                            balance: '0.00', // Добавьте логику для получения NOT
-                        },
-                        {
-                            name: 'USDT',
-                            balance: '0.00', // Добавьте логику для получения USDT
-                        },
-                        {
-                            name: 'RZ',
-                            balance: '0.00', // Добавьте логику для получения вашего жетона RZ
                         },
                     ];
                     return [4 /*yield*/, fetchJettons(client, walletAddress)];
@@ -134,7 +128,7 @@ function fetchCurrencies(address) {
                     return [2 /*return*/, __spreadArray(__spreadArray([], currencies, true), jettons, true)];
                 case 3:
                     error_3 = _a.sent();
-                    console.error('Error fetching currencies:', error_3);
+                    console.error('Error fetching currencies for address:', address, error_3);
                     throw new Error('Failed to fetch currencies.');
                 case 4: return [2 /*return*/];
             }

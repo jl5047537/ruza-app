@@ -1,19 +1,25 @@
 import { fetchUserWalletAddress } from '@/lib/api'
+import { useToast } from '@/lib/contexts/ToastContext'
 import useStore from '@/lib/store/store'
 import { LEVEL_START } from '@/lib/utils/consts'
+import CopyIcon from '@/public/Icons/CopyIcon'
 import NoIcon from '@/public/Icons/NoIcon'
 import YesIcon from '@/public/Icons/YesIcon'
 import { useEffect, useState } from 'react'
 import Button from '../UI/Button/Button'
+import Modal from '../UI/Modal/Modal'
 import styles from './WalletUsers.module.scss'
 import { WalletUser } from './WalletUsers.props'
-import { jwtDecode } from 'jwt-decode'
 
 const WalletUsers = () => {
 	const { tonWalletAddress, walletStatus } = useStore(state => state)
 	const [userWalletAddress, setUserWalletAddress] = useState<string>('')
 	const [statusIcon, setStatusIcon] = useState<boolean>(false)
-	const [referralLink, setReferralLink] = useState<string>('')
+	const [isModalOpen, setIsModalOpen] = useState(false)
+	const showToast = useToast()
+	const isRefirral = false
+
+	const referralLink = `${window.location.origin}/auth?referralId=${userWalletAddress}`
 
 	useEffect(() => {
 		const token = localStorage.getItem('jwt') || ''
@@ -30,44 +36,32 @@ const WalletUsers = () => {
 		}
 	}, [walletStatus])
 
-	const generateReferralLink = async () => {
-		try {
-		  const token = localStorage.getItem('jwt')
-		  if (!token) {
-			alert('Ошибка: пользователь не авторизован!')
-			return
-		  }
-	  
-		  const decodedToken = jwtDecode<{ id: string }>(token)
-		  const userId = decodedToken.id
-	  
-		  const response = await fetch('/api/referral', {
-			method: 'POST',
-			body: JSON.stringify({ userId }),
-			headers: { 'Content-Type': 'application/json' },
-		  })
-	  
-		  const data = await response.json()
-	  
-		  if (data.referralLink) {
-			setReferralLink(data.referralLink)
-			alert(`Ваша реферальная ссылка: ${data.referralLink}`)
-		  } else {
-			alert('Ошибка при получении реферальной ссылки')
-		  }
-		} catch (error) {
-		  alert('Ошибка при генерации ссылки')
-		  console.error(error)
-		}
-	  }
+	const handleCopyToClipboard = () => {
+		navigator.clipboard.writeText(referralLink).then(() => {
+			showToast('Ссылка скопирована', 'success')
+		})
+	}
 
+	const copyToClipboardAddress = () => {
+		navigator.clipboard.writeText(userWalletAddress)
+		showToast('Адрес скопирован в буфер обмена!', 'success')
+	}
+
+	const handleInviteToTelegram = () => {
+		window.open(
+			`https://t.me/share/url?url=${encodeURIComponent(referralLink)}`,
+			'_blank'
+		)
+	}
+
+	// Проверяем статус кошелька
 	if (!walletStatus) {
 		return (
 			<div className={styles.walletUsers}>
 				<div className={styles.blockName}>Кошельки получателей</div>
 				<div className={styles.blockWalletUsers}>
 					<p className={styles.walletUnavailable}>
-						Данный раздел не доступен. Чтобы разблокировать, подключите кошелек
+						Данный раздел не доступен. Чтобы разблокировать, подключите кошелек.
 					</p>
 				</div>
 			</div>
@@ -78,46 +72,74 @@ const WalletUsers = () => {
 		<div className={styles.walletUsers}>
 			<div className={styles.blockName}>Кошельки получателей</div>
 			<div className={styles.blockWalletUsers}>
-				{WalletUser.map(item => (
-					<div className={styles.itemWaletUsers} key={item.key}>
-						<div className={styles.level}>{item.levelNumber}</div>
-						<div className={styles.adressWallet}>
-							<p className={styles.adressP}>Адрес кошелька</p>
-							<p className={styles.adressWaletP}>{item.adressWallet}</p>
-						</div>
-						<div className={styles.iconStatus}>
-							<NoIcon />
-						</div>
+				{isRefirral === false ? (
+					<div className={styles.noRefirral}>
+						У вас нет рефералов, поэтому вы не видите остальные уровни
 					</div>
-				))}
+				) : (
+					WalletUser.map(item => (
+						<div className={styles.itemWaletUsers} key={item.key}>
+							<div className={styles.level}>{item.levelNumber}</div>
+							<div className={styles.adressWallet}>
+								<p className={styles.adressP}>Адрес кошелька</p>
+								<p className={styles.adressWaletP}>{item.adressWallet}</p>
+							</div>
+							<div className={styles.iconStatus}>
+								<NoIcon />
+							</div>
+						</div>
+					))
+				)}
+
 				<div className={styles.itemWaletUsers}>
 					<div className={styles.level}>{LEVEL_START}</div>
 					<div className={styles.adressWallet}>
-						<p className={styles.adressP}>Адрес кошелька</p>
-						<p className={styles.adressWaletP}>
+						<p className={styles.adressP}>Ваш адрес кошелька</p>
+						<button onClick={copyToClipboardAddress} className={styles.adressWaletP}>
 							{userWalletAddress || 'Адрес кошелька не найден'}
-						</p>
+						</button>
 					</div>
 					<div className={styles.iconStatus}>
 						{statusIcon === true ? <YesIcon /> : <NoIcon />}
 					</div>
 				</div>
+
 				<div className={styles.infoSendWallet}>
 					Комиссия сети за каждый перевод 10%
 				</div>
+
 				<Button className={styles.sendAll}>Отправить всем</Button>
-				<Button className={styles.sendAll} onClick={generateReferralLink}>
+				<Button className={styles.sendAll} onClick={() => setIsModalOpen(true)}>
 					Пригласить друзей
 				</Button>
-				{referralLink && (
-					<div className={styles.referralLink}>
-						<p>Ваша реферальная ссылка:</p>
-						<a href={referralLink} target='_blank' rel='noopener noreferrer'>
-							{referralLink}
-						</a>
-					</div>
-				)}
 			</div>
+
+			{isModalOpen && (
+				<Modal onClose={() => setIsModalOpen(false)}>
+					<div className={styles.modalContent}>
+						<p className={styles.modalTitle}>Ваша реферальная ссылка</p>
+						<div className={styles.referralContainer}>
+							<input
+								className={styles.referralInput}
+								value={referralLink}
+								readOnly
+							/>
+							<Button
+								className={styles.copyButton}
+								onClick={handleCopyToClipboard}
+							>
+								<CopyIcon />
+							</Button>
+						</div>
+						<Button
+							className={styles.telegramButton}
+							onClick={handleInviteToTelegram}
+						>
+							Пригласить в Telegram
+						</Button>
+					</div>
+				</Modal>
+			)}
 		</div>
 	)
 }
