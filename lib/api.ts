@@ -1,5 +1,3 @@
-// получаем адрес подключенного кошелька
-
 export const fetchUserWalletAddress = async (token: string) => {
 	const response = await fetch('/api/auth/me', {
 		headers: {
