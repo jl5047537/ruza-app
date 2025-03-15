@@ -3,4 +3,4 @@ export const WALLET_MANIFEST_URL =
 
 export const LEVEL_START = 5
 
-export const BOT_NAME = "RuZaAuthBot"
+export const BOT_NAME = "TestKassaTestBot"
